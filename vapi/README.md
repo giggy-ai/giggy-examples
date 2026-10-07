@@ -1,4 +1,4 @@
-# Use Giggy as a Vapi custom TTS provider
+# Use Giggy custom TTS with Vapi
 
 Giggy exposes a Vapi-compatible custom TTS webhook:
 
