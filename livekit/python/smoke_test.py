@@ -6,7 +6,7 @@ from giggy_tts import create_giggy_tts
 def main() -> None:
     os.environ.setdefault(
         r"""GIGGY_API_KEY""",
-        r"""giggy_sk_smoke_test_not_a_real_key""",
+        r"""giggy_smoke_test_not_a_real_key""",
     )
 
     os.environ.setdefault(
