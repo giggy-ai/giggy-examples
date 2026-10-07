@@ -1,8 +1,10 @@
-# Giggy examples
+# Giggy TTS examples
 
-Giggy is a text-to-speech API for developers building voice agents and voice-enabled products.
+[![Examples CI](https://github.com/giggy-ai/giggy-examples/actions/workflows/ci.yml/badge.svg)](https://github.com/giggy-ai/giggy-examples/actions/workflows/ci.yml)
 
-This repository contains small, runnable examples for using Giggy with:
+Giggy is a text-to-speech (TTS) API for developers building voice agents and voice-enabled products.
+
+This repository contains small, runnable Giggy TTS examples for:
 
 - Node.js
 - Python
@@ -20,6 +22,29 @@ This repository contains small, runnable examples for using Giggy with:
 - MCP endpoint: https://giggy.ai/mcp
 - Pricing: https://giggy.ai/pricing
 - MCP setup repository: https://github.com/giggy-ai/giggy-mcp
+
+## Quick start
+
+Set a Giggy API key and voice UUID:
+
+```bash
+export GIGGY_API_KEY="giggy_sk_..."
+export GIGGY_VOICE_ID="your-giggy-voice-uuid"
+```
+
+Generate an MP3 with the native Giggy text-to-speech REST API:
+
+```bash
+curl --fail --show-error \
+  --request POST "https://giggy.ai/v1/text-to-speech" \
+  --header "xi-api-key: ${GIGGY_API_KEY}" \
+  --header "content-type: application/json" \
+  --header "idempotency-key: quickstart-$(date +%s)-$$" \
+  --data "{\"text\":\"Hello from Giggy.\",\"voice_id\":\"${GIGGY_VOICE_ID}\",\"model_id\":\"giggyspeech\",\"mode\":\"batch\",\"output_format\":\"mp3_24000_160\",\"voice_settings\":{\"speed\":1}}" \
+  --output speech.mp3
+```
+
+For framework-specific integrations, use the examples below.
 
 ## Core API endpoints
 
@@ -94,14 +119,14 @@ GET https://giggy.ai/v1/voices
 
 | Example | Directory |
 | --- | --- |
-| Native Node.js Batch TTS | `node/basic-tts/` |
-| Native Node.js Streaming TTS | `node/streaming-tts/` |
-| OpenAI-compatible Node.js | `node/openai-compatible/` |
-| Native Python Batch TTS | `python/basic-tts/` |
-| LiveKit Python | `livekit/python/` |
-| Pipecat Python | `pipecat/python/` |
-| Vapi custom TTS | `vapi/` |
-| MCP | `mcp/` |
+| Native Node.js Batch TTS | [node/basic-tts/](node/basic-tts/) |
+| Native Node.js Streaming TTS | [node/streaming-tts/](node/streaming-tts/) |
+| OpenAI-compatible Node.js | [node/openai-compatible/](node/openai-compatible/) |
+| Native Python Batch TTS | [python/basic-tts/](python/basic-tts/) |
+| LiveKit Python | [livekit/python/](livekit/python/) |
+| Pipecat Python | [pipecat/python/](pipecat/python/) |
+| Vapi custom TTS | [vapi/](vapi/) |
+| MCP | [mcp/](mcp/) |
 
 ## Node.js: Batch TTS
 
