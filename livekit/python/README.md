@@ -77,3 +77,15 @@ python smoke_test.py
 ```
 
 The smoke test constructs the TTS object but performs no synthesis.
+
+## Native LiveKit plugin contribution
+
+Giggy is contributing a native Python TTS plugin to LiveKit Agents.
+
+Upstream PR:
+https://github.com/livekit/agents/pull/7659
+
+This directory remains the OpenAI-compatible integration example.
+
+The native plugin is not considered officially released until the upstream
+contribution is merged and an installable release is published.
