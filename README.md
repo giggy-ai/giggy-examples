@@ -1,8 +1,6 @@
 # Giggy TTS examples
-
-[![Examples CI](https://github.com/GRQDigitalCapital/giggy-examples/actions/workflows/ci.yml/badge.svg)](https://github.com/GRQDigitalCapital/giggy-examples/actions/workflows/ci.yml)
-
-Giggy is a text-to-speech (TTS) API for developers building voice agents and voice-enabled products.
+`r`n[![Examples CI](https://github.com/GRQDigitalCapital/giggy-examples/actions/workflows/ci.yml/badge.svg)](https://github.com/GRQDigitalCapital/giggy-examples/actions/workflows/ci.yml)`r`n
+Small, runnable examples for integrating the Giggy text-to-speech API with Node.js, Python, LiveKit, Pipecat, Vapi, MCP, and OpenAI-compatible clients.
 
 This repository contains small, runnable Giggy TTS examples for:
 
@@ -19,7 +17,7 @@ This repository contains small, runnable Giggy TTS examples for:
 
 - Documentation: https://giggy.ai/docs/speech-api
 - OpenAPI 3.1: https://giggy.ai/v1/openapi.json
-- JavaScript/TypeScript SDK: https://github.com/giggy-ai/giggy-js
+- Official JavaScript/TypeScript SDK: https://github.com/giggy-ai/giggy-js
 - MCP endpoint: https://giggy.ai/mcp
 - Pricing: https://giggy.ai/pricing
 - MCP setup repository: https://github.com/GRQDigitalCapital/giggy-mcp

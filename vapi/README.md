@@ -102,3 +102,14 @@ the exact requested sample rate
   }
 }
 ```
+## Verify a real Vapi call
+
+1. Configure a Vapi Custom Credential containing the Giggy API key.
+2. Replace `VOICE_ID` with a valid Giggy voice UUID.
+3. Create or update a test assistant using `assistant-config.json`.
+4. Place an authorized test call.
+5. Confirm Giggy receives a custom TTS request.
+6. Confirm Vapi receives a nonempty PCM audio response.
+7. Record the result without storing credentials or call audio in Git.
+
+This repository has not performed an authorized Vapi test call.

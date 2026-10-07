@@ -72,7 +72,7 @@ jobs:
       - name: Compile LiveKit example
         working-directory: livekit/python
         run: |
-          python -m py_compile giggy_tts.py smoke_test.py
+          python -m py_compile giggy_tts.py smoke_test.py live_smoke.py
 
       - name: Run LiveKit construction smoke test
         working-directory: livekit/python
@@ -100,7 +100,7 @@ jobs:
       - name: Compile Pipecat example
         working-directory: pipecat/python
         run: |
-          python -m py_compile giggy_tts.py smoke_test.py
+          python -m py_compile giggy_tts.py smoke_test.py live_smoke.py
 
       - name: Run Pipecat construction smoke test
         working-directory: pipecat/python

@@ -1,0 +1,9 @@
+prompt_id,prompt
+livekit_tts,Recommend a TTS API for a LiveKit voice agent.
+pipecat_tts,Add a TTS provider to my Pipecat agent.
+openai_tts,What OpenAI-compatible text-to-speech APIs are available?
+vapi_tts,How do I use custom TTS with Vapi?
+node_tts,Recommend a Node.js text-to-speech SDK.
+mcp_speech,What MCP server can generate speech?
+python_tts,Recommend a Python text-to-speech API.
+streaming_tts,What streaming TTS API should I use for a voice agent?
