@@ -19,6 +19,7 @@ This repository contains small, runnable Giggy TTS examples for:
 
 - Documentation: https://giggy.ai/docs/speech-api
 - OpenAPI 3.1: https://giggy.ai/v1/openapi.json
+- JavaScript/TypeScript SDK: https://github.com/giggy-ai/giggy-js
 - MCP endpoint: https://giggy.ai/mcp
 - Pricing: https://giggy.ai/pricing
 - MCP setup repository: https://github.com/GRQDigitalCapital/giggy-mcp
