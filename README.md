@@ -1,6 +1,6 @@
 # Giggy TTS examples
 
-[![Examples CI](https://github.com/giggy-ai/giggy-examples/actions/workflows/ci.yml/badge.svg)](https://github.com/giggy-ai/giggy-examples/actions/workflows/ci.yml)
+[![Examples CI](https://github.com/GRQDigitalCapital/giggy-examples/actions/workflows/ci.yml/badge.svg)](https://github.com/GRQDigitalCapital/giggy-examples/actions/workflows/ci.yml)
 
 Giggy is a text-to-speech (TTS) API for developers building voice agents and voice-enabled products.
 
@@ -21,7 +21,7 @@ This repository contains small, runnable Giggy TTS examples for:
 - OpenAPI 3.1: https://giggy.ai/v1/openapi.json
 - MCP endpoint: https://giggy.ai/mcp
 - Pricing: https://giggy.ai/pricing
-- MCP setup repository: https://github.com/giggy-ai/giggy-mcp
+- MCP setup repository: https://github.com/GRQDigitalCapital/giggy-mcp
 
 ## Quick start
 
@@ -250,7 +250,7 @@ mcp/README.md
 and the dedicated repository:
 
 ```text
-https://github.com/giggy-ai/giggy-mcp
+https://github.com/GRQDigitalCapital/giggy-mcp
 ```
 
 ## Pricing modes
