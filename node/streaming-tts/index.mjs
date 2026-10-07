@@ -1,4 +1,3 @@
-import { randomUUID } from 'node:crypto';
 import { createWriteStream } from 'node:fs';
 import { Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
@@ -19,7 +18,6 @@ const response = await fetch('https://giggy.ai/v1/text-to-speech', {
   headers: {
     'xi-api-key': apiKey,
     'content-type': 'application/json',
-    'idempotency-key': randomUUID(),
   },
   body: JSON.stringify({
     text: 'This audio is streaming from Giggy.',
