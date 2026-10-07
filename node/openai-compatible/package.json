@@ -1,0 +1,17 @@
+{
+  "name": "giggy-openai-compatible-example",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Use Giggy text-to-speech through the OpenAI-compatible speech API.",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node index.mjs",
+    "check": "node --check index.mjs"
+  },
+  "dependencies": {
+    "openai": "7.17.0"
+  }
+}

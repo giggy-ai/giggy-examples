@@ -1,0 +1,135 @@
+name: Examples CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  node:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: node/openai-compatible/package-lock.json
+
+      - name: Check dependency-free Node examples
+        run: |
+          node --check node/basic-tts/index.mjs
+          node --check node/streaming-tts/index.mjs
+
+      - name: Install OpenAI-compatible example dependencies
+        working-directory: node/openai-compatible
+        run: npm ci
+
+      - name: Check OpenAI-compatible example
+        working-directory: node/openai-compatible
+        run: npm run check
+
+  python-basic:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Compile native Python example
+        run: |
+          python -m py_compile python/basic-tts/main.py
+
+  livekit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install LiveKit example
+        working-directory: livekit/python
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Compile LiveKit example
+        working-directory: livekit/python
+        run: |
+          python -m py_compile giggy_tts.py smoke_test.py
+
+      - name: Run LiveKit construction smoke test
+        working-directory: livekit/python
+        run: |
+          python smoke_test.py
+
+  pipecat:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Pipecat example
+        working-directory: pipecat/python
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Compile Pipecat example
+        working-directory: pipecat/python
+        run: |
+          python -m py_compile giggy_tts.py smoke_test.py
+
+      - name: Run Pipecat construction smoke test
+        working-directory: pipecat/python
+        run: |
+          python smoke_test.py
+
+  static:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate Vapi JSON
+        run: |
+          python -m json.tool vapi/assistant-config.json > /dev/null
+
+      - name: Fail if a likely real Giggy key is committed
+        shell: bash
+        run: |
+          matches="$(
+            grep -R -n -E 'giggy_sk_[A-Za-z0-9_-]{16,}' . \
+              --exclude-dir=.git \
+              --exclude='.env.example' \
+              || true
+          )"
+
+          if [ -n "$matches" ]; then
+            printf '%s\n' "$matches"
+            echo "Potential Giggy API key found."
+            exit 1
+          fi

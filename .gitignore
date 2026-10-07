@@ -1,0 +1,17 @@
+.env
+.env.*
+!.env.example
+
+node_modules/
+
+.venv/
+venv/
+
+__pycache__/
+*.py[cod]
+
+speech.mp3
+speech.pcm
+speech.wav
+
+.DS_Store
