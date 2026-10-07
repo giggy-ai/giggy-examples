@@ -1,5 +1,6 @@
 # Giggy TTS examples
-`r`n[![Examples CI](https://github.com/GRQDigitalCapital/giggy-examples/actions/workflows/ci.yml/badge.svg)](https://github.com/GRQDigitalCapital/giggy-examples/actions/workflows/ci.yml)`r`n
+[![Examples CI](https://github.com/GRQDigitalCapital/giggy-examples/actions/workflows/ci.yml/badge.svg)](https://github.com/GRQDigitalCapital/giggy-examples/actions/workflows/ci.yml)
+
 Small, runnable examples for integrating the Giggy text-to-speech API with Node.js, Python, LiveKit, Pipecat, Vapi, MCP, and OpenAI-compatible clients.
 
 This repository contains small, runnable Giggy TTS examples for:
