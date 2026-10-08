@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "Giggy Speech API",
-    "description": "Generate text-to-speech audio with Giggy using free Batch or paid Fast generation.",
+    "description": "Giggy makes Voice AI affordable enough to offer hosted text-to-speech largely for free. Try free Batch TTS or paid Fast generation.\n\n[Giggy.ai](https://giggy.ai) provides a text-to-speech REST API. Batch uses zero credits and is queued; Fast consumes credits and receives higher queue priority.\n\n## Quick start\n\n1. Create a Giggy API key in Speech API → API Keys and select a voice UUID in the API Playground.\n2. Fork this collection into your workspace. Set `GIGGY_API_KEY` in a private Postman environment; never publish the key.\n3. Set `voiceId` to your valid voice UUID and `sampleText` to the text to speak. `baseUrl` defaults to `https://giggy.ai`.\n4. Send **Free Batch TTS** or **Fast TTS (Paid)**. Both wait for completed MP3 audio; no job polling is required.\n5. Check HTTP 200 and `audio/mpeg`, then use **Send and Download** or **Save Response** to save `speech.mp3`. Allow up to 600 seconds for queued requests.\n\nBatch is subject to queues, request-size limits, and rate limits. Errors return JSON; stop on errors rather than saving them as MP3.\n\n## Developer resources\n\n- [Giggy Speech API documentation](https://giggy.ai/docs/speech-api)\n- [Free Batch TTS with Python](https://github.com/giggy-ai/giggy-examples/tree/main/python/basic-tts)\n- [Giggy vs ElevenLabs listening comparison](https://github.com/giggy-ai/giggy-examples/tree/main/tutorials/02-giggy-vs-elevenlabs)",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
