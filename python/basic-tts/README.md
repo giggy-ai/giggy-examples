@@ -1,72 +1,22 @@
-# Use Giggy TTS with Python
+# Free Text-to-Speech API with Python — Giggy Batch
 
-Giggy is a text-to-speech API for voice agents and voice-enabled products.
+Generate speech with Giggy's free Batch API and save the completed MP3 as `speech.mp3`. Requires Python 3.10+ and `requests`.
 
-This example generates an MP3 using Giggy's native REST API and only the Python standard library.
+Sign in at [Giggy](https://giggy.ai). Open Speech API → API Keys and create an API key. In the Speech API Playground, select an available voice and copy its `voice_id` UUID from the generated request preview. Keep your API key private.
 
-No third-party Python HTTP dependency is required.
-
-## Endpoint
-
-```text
-POST https://giggy.ai/v1/text-to-speech
-```
-
-## Requirements
-
-- Python 3.10+
-- Giggy API key
-- Giggy voice UUID
-
-## Environment
+Execute these commands from the repository root:
 
 ```bash
-export GIGGY_API_KEY="giggy_sk_..."
-export GIGGY_VOICE_ID="your-giggy-voice-uuid"
-```
+python -m pip install -r tutorials/requirements.txt
 
-## Run
+export GIGGY_API_KEY="YOUR_API_KEY"
+export GIGGY_VOICE_ID="YOUR_VOICE_UUID"
 
-From the repository root:
-
-```bash
 python python/basic-tts/main.py
 ```
 
-Or from this directory:
+Open `speech.mp3` from the current working directory in an MP3 player. The request uses `POST https://giggy.ai/v1/text-to-speech`, `model_id=giggyspeech`, `mode=batch`, `output_format=mp3_24000_160`, and `voice_settings.speed=1`, authenticated with the `xi-api-key` header.
 
-```bash
-python main.py
-```
+Batch uses zero credits but is queued and subject to request-size limits and rate limits. The HTTP request waits for completed audio; no job polling is required. This example allows 600 seconds per request and stops on an HTTP error, timeout, or non-audio response.
 
-The example writes:
-
-```text
-speech.mp3
-```
-
-The request uses:
-
-```text
-model_id=giggyspeech
-mode=batch
-output_format=mp3_24000_160
-```
-
-Authentication:
-
-```text
-xi-api-key: $GIGGY_API_KEY
-```
-
-The request also sends a unique idempotency key.
-
-The complete runnable implementation is:
-
-```text
-main.py
-```
-
-Documentation:
-
-https://giggy.ai/docs/speech-api
+[Giggy](https://giggy.ai) · [Speech API documentation](https://giggy.ai/docs/speech-api)

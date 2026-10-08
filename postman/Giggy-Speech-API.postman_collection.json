@@ -1,0 +1,79 @@
+{
+  "info": {
+    "name": "Giggy Speech API",
+    "description": "Generate text-to-speech audio with Giggy using free Batch or paid Fast generation.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "value": "https://giggy.ai",
+      "key": "baseUrl"
+    },
+    {
+      "value": "YOUR_VOICE_UUID",
+      "key": "voiceId"
+    },
+    {
+      "value": "Welcome to Giggy.",
+      "key": "sampleText"
+    }
+  ],
+  "item": [
+    {
+      "name": "Free Batch TTS",
+      "request": {
+        "url": "{{baseUrl}}/v1/text-to-speech",
+        "method": "POST",
+        "body": {
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          },
+          "mode": "raw",
+          "raw": "{\r\n  \"text\": \"{{sampleText}}\",\r\n  \"voice_id\": \"{{voiceId}}\",\r\n  \"model_id\": \"giggyspeech\",\r\n  \"mode\": \"batch\",\r\n  \"output_format\": \"mp3_24000_160\",\r\n  \"voice_settings\": {\r\n    \"speed\": 1\r\n  }\r\n}"
+        },
+        "header": [
+          {
+            "value": "application/json",
+            "key": "Content-Type"
+          },
+          {
+            "value": "{{GIGGY_API_KEY}}",
+            "key": "xi-api-key"
+          }
+        ],
+        "description": "Batch is free but queued and subject to request-size and rate limits. Set GIGGY_API_KEY in your private Postman environment; never store or share it in this collection. Set voiceId to a valid Giggy voice UUID. The request waits for completed audio/mpeg; no polling is required. Use Send and Download (or Save Response to a file) and save the response as speech.mp3. Check for HTTP 200 and audio/mpeg before saving; errors are JSON. Allow up to 600 seconds for queued generation. Documentation: https://giggy.ai/docs/speech-api"
+      },
+      "response": []
+    },
+    {
+      "name": "Fast TTS (Paid)",
+      "request": {
+        "url": "{{baseUrl}}/v1/text-to-speech",
+        "method": "POST",
+        "body": {
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          },
+          "mode": "raw",
+          "raw": "{\r\n  \"text\": \"{{sampleText}}\",\r\n  \"voice_id\": \"{{voiceId}}\",\r\n  \"model_id\": \"giggyspeech\",\r\n  \"mode\": \"fast\",\r\n  \"output_format\": \"mp3_24000_160\",\r\n  \"voice_settings\": {\r\n    \"speed\": 1\r\n  }\r\n}"
+        },
+        "header": [
+          {
+            "value": "application/json",
+            "key": "Content-Type"
+          },
+          {
+            "value": "{{GIGGY_API_KEY}}",
+            "key": "xi-api-key"
+          }
+        ],
+        "description": "Fast consumes credits and receives higher queue priority. Set GIGGY_API_KEY in your private Postman environment; never store or share it in this collection. Set voiceId to a valid Giggy voice UUID. The request waits for completed audio/mpeg; no polling is required. Use Send and Download (or Save Response to a file) and save the response as speech.mp3. Check for HTTP 200 and audio/mpeg before saving; errors are JSON. Allow up to 600 seconds for queued generation. Documentation: https://giggy.ai/docs/speech-api"
+      },
+      "response": []
+    }
+  ]
+}

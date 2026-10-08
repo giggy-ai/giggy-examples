@@ -1,76 +1,34 @@
-import json
 import os
-import urllib.error
-import urllib.request
-import uuid
 from pathlib import Path
 
+import requests
 
-API_URL = r"""https://giggy.ai/v1/text-to-speech"""
-OUTPUT_PATH = Path(r"""speech.mp3""")
+API_URL = "https://giggy.ai/v1/text-to-speech"
 
+payload = {
+    "text": r"""Welcome to Giggy's free text-to-speech API.""",
+    "voice_id": os.environ["GIGGY_VOICE_ID"],
+    "model_id": "giggyspeech",
+    "mode": "batch",
+    "output_format": "mp3_24000_160",
+    "voice_settings": {"speed": 1},
+}
 
-def main() -> None:
-    api_key = os.environ.get(r"""GIGGY_API_KEY""")
-    voice_id = os.environ.get(r"""GIGGY_VOICE_ID""")
+response = requests.post(
+    API_URL,
+    headers={
+        "xi-api-key": os.environ["GIGGY_API_KEY"],
+        "Content-Type": "application/json",
+    },
+    json=payload,
+    timeout=600,
+)
+response.raise_for_status()
 
-    if not api_key:
-        raise RuntimeError(
-            r"""Set GIGGY_API_KEY before running this example."""
-        )
-
-    if not voice_id:
-        raise RuntimeError(
-            r"""Set GIGGY_VOICE_ID before running this example."""
-        )
-
-    payload = {
-        r"""text""": r"""Hello from Giggy.""",
-        r"""voice_id""": voice_id,
-        r"""model_id""": r"""giggyspeech""",
-        r"""mode""": r"""batch""",
-        r"""output_format""": r"""mp3_24000_160""",
-        r"""voice_settings""": {
-            r"""speed""": 1,
-        },
-    }
-
-    request = urllib.request.Request(
-        API_URL,
-        data=json.dumps(payload).encode(r"""utf-8"""),
-        headers={
-            r"""xi-api-key""": api_key,
-            r"""content-type""": r"""application/json""",
-            r"""idempotency-key""": str(uuid.uuid4()),
-        },
-        method=r"""POST""",
+if not response.headers.get("Content-Type", "").lower().startswith("audio/"):
+    raise RuntimeError(
+        f"Expected audio, received: {response.headers.get('Content-Type')}"
     )
 
-    try:
-        with urllib.request.urlopen(request) as response:
-            audio = response.read()
-    except urllib.error.HTTPError as error:
-        body = error.read().decode(
-            r"""utf-8""",
-            errors=r"""replace""",
-        )
-
-        raise RuntimeError(
-            r"""Giggy returned HTTP {}: {}""".format(
-                error.code,
-                body,
-            )
-        ) from error
-
-    OUTPUT_PATH.write_bytes(audio)
-
-    print(
-        r"""Wrote {} bytes to {}""".format(
-            len(audio),
-            OUTPUT_PATH,
-        )
-    )
-
-
-if __name__ == r"""__main__""":
-    main()
+Path("speech.mp3").write_bytes(response.content)
+print("Saved speech.mp3")
