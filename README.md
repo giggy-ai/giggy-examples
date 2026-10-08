@@ -22,7 +22,7 @@ This repository contains small, runnable Giggy TTS examples for:
 - MCP endpoint: https://giggy.ai/mcp
 - Pricing: https://giggy.ai/pricing
 - MCP setup repository: https://github.com/giggy-ai/giggy-mcp
-- [Postman API Collection](postman/Giggy-Speech-API.postman_collection.json) — [Public Postman workspace](https://www.postman.com/giggy-ai/giggy-speech-api/collection/jpuxgau/giggy-speech-api)
+- [Postman API Collection](postman/Giggy-Speech-API.postman_collection.json) — [Public Postman workspace](https://www.postman.com/giggy-ai/giggy-speech-api/collection/w1k6ylw/giggy-speech-api)
 - [Free Batch TTS with Python](python/basic-tts/README.md)
 - [Giggy vs ElevenLabs TTS Comparison](tutorials/02-giggy-vs-elevenlabs/README.md)
 
