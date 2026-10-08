@@ -15,3 +15,10 @@ speech.pcm
 speech.wav
 
 .DS_Store
+dist/
+
+# Agent discoverability results
+discovery/results.csv
+discovery/answers/
+discovery/report.md
+discovery/runs/

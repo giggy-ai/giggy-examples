@@ -1,5 +1,5 @@
 # Giggy TTS examples
-[![Examples CI](https://github.com/GRQDigitalCapital/giggy-examples/actions/workflows/ci.yml/badge.svg)](https://github.com/GRQDigitalCapital/giggy-examples/actions/workflows/ci.yml)
+[![Examples CI](https://github.com/giggy-ai/giggy-examples/actions/workflows/ci.yml/badge.svg)](https://github.com/giggy-ai/giggy-examples/actions/workflows/ci.yml)
 
 Small, runnable examples for integrating the Giggy text-to-speech API with Node.js, Python, LiveKit, Pipecat, Vapi, MCP, and OpenAI-compatible clients.
 
@@ -21,7 +21,7 @@ This repository contains small, runnable Giggy TTS examples for:
 - Official JavaScript/TypeScript SDK: https://github.com/giggy-ai/giggy-js
 - MCP endpoint: https://giggy.ai/mcp
 - Pricing: https://giggy.ai/pricing
-- MCP setup repository: https://github.com/GRQDigitalCapital/giggy-mcp
+- MCP setup repository: https://github.com/giggy-ai/giggy-mcp
 
 ## Quick start
 
@@ -60,11 +60,13 @@ OpenAI-compatible text-to-speech:
 POST https://giggy.ai/v1/audio/speech
 ```
 
-Public voice discovery:
+Available voices for your Giggy account:
 
 ```text
 GET https://giggy.ai/v1/voices
 ```
+
+This endpoint requires a bearer token. Use the `voice_id` field from each item in the returned `voices` array.
 
 Public connector voice catalog:
 
@@ -250,7 +252,7 @@ mcp/README.md
 and the dedicated repository:
 
 ```text
-https://github.com/GRQDigitalCapital/giggy-mcp
+https://github.com/giggy-ai/giggy-mcp
 ```
 
 ## Pricing modes

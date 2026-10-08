@@ -24,7 +24,7 @@ get_speech_generation
 Use the dedicated MCP repository for client configuration and raw MCP examples:
 
 ```text
-https://github.com/GRQDigitalCapital/giggy-mcp
+https://github.com/giggy-ai/giggy-mcp
 ```
 
 Giggy MCP returns generation metadata rather than live audio bytes.

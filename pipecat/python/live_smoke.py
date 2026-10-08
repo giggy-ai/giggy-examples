@@ -1,10 +1,11 @@
 import asyncio
 import os
-import uuid
 
 import aiohttp
-from pipecat.frames.frames import ErrorFrame, TTSAudioRawFrame
 from giggy_tts import GiggyTTSService
+from pipecat.frames.frames import ErrorFrame, TTSAudioRawFrame, TTSSpeakFrame
+from pipecat.pipeline.worker import PipelineParams
+from pipecat.tests.utils import run_test
 
 
 async def main() -> None:
@@ -15,9 +16,16 @@ async def main() -> None:
     total_bytes = 0
     async with aiohttp.ClientSession() as session:
         tts = GiggyTTSService(api_key=api_key, voice_id=voice_id, aiohttp_session=session)
-        async for frame in tts.run_tts("Hello from Giggy Pipecat.", str(uuid.uuid4())):
-            if isinstance(frame, ErrorFrame):
-                raise RuntimeError(str(frame.error))
+        down_frames, up_frames = await run_test(
+            tts,
+            frames_to_send=[TTSSpeakFrame("Hello from Giggy Pipecat.")],
+            pipeline_params=PipelineParams(audio_out_sample_rate=24000),
+            enable_rtvi=False,
+        )
+        errors = [frame.error for frame in up_frames if isinstance(frame, ErrorFrame)]
+        if errors:
+            raise RuntimeError(str(errors[0]))
+        for frame in down_frames:
             if isinstance(frame, TTSAudioRawFrame):
                 total_bytes += len(frame.audio)
     if total_bytes <= 0:

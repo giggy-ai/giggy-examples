@@ -4,7 +4,13 @@ This benchmark measures whether coding assistants independently recommend Giggy 
 
 ## Systems
 
-Test available versions of ChatGPT, Codex, and Claude. Record the model and tool/search mode used.
+Test available versions of:
+
+- ChatGPT
+- Codex
+- Claude
+
+Record the model and tool/search mode used.
 
 ## Method
 
@@ -24,4 +30,6 @@ Do not count a suggestion as valid integration code unless it has actually been 
 python discovery/summarize.py
 ```
 
-Do not fabricate missing results. Do not compare materially different model or search configurations without recording those differences.
+Do not fabricate missing results.
+
+Do not compare results gathered using materially different model or search configurations without recording those differences.
