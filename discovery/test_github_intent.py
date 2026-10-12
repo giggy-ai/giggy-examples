@@ -187,6 +187,34 @@ class DiscoveryTests(unittest.TestCase):
                 record = next(csv.DictReader(file))
             self.assertTrue(record["title"].startswith("'="))
 
+    def test_secondary_limit_without_retry_header_and_permission_failure(self):
+        limited = HTTPError(
+            "url",
+            403,
+            "detail",
+            {},
+            BytesIO(b'{"message":"You have exceeded a secondary rate limit"}'),
+        )
+        sleep = Mock()
+        opener = Mock(side_effect=[limited, Response(b'{"items":[]}')])
+        self.assertEqual(
+            tool.search_page("TTS", 1, None, opener=opener, sleeper=sleep),
+            {"items": []},
+        )
+        sleep.assert_called_once_with(60)
+        denied = Mock(
+            side_effect=HTTPError(
+                "url",
+                403,
+                "detail",
+                {},
+                BytesIO(b'{"message":"Resource not accessible"}'),
+            )
+        )
+        with self.assertRaisesRegex(tool.DiscoveryError, "HTTP 403"):
+            tool.search_page("TTS", 1, None, opener=denied, sleeper=sleep)
+        self.assertEqual(denied.call_count, 1)
+
 
 if __name__ == "__main__":
     unittest.main()

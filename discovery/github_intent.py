@@ -133,16 +133,20 @@ def search_page(
                     or error.headers.get("X-RateLimit-Remaining") == "0"
                 )
             )
+            if error.code == 403 and not limited:
+                try:
+                    message = str(json.loads(error.read(4096)).get("message", ""))
+                    limited = "rate limit" in message.lower()
+                except (ValueError, OSError, AttributeError):
+                    pass
             try:
+                reset = error.headers.get("X-RateLimit-Reset")
                 delay = (
                     float(retry)
                     if retry is not None
-                    else max(
-                        1,
-                        float(error.headers.get("X-RateLimit-Reset", time.time() + 60))
-                        - time.time()
-                        + 1,
-                    )
+                    else max(1, float(reset) - time.time() + 1)
+                    if reset
+                    else 60
                 )
             except ValueError:
                 delay = 60
