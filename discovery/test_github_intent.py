@@ -167,7 +167,12 @@ class DiscoveryTests(unittest.TestCase):
 
     def test_reports_redact_contacts_and_neutralize_csv_formulas(self):
         row = tool.classify(
-            issue(title="=TTS contact somebody@example.com | <script>"),
+            issue(
+                title="=TTS contact somebody@example.com +15551234567 "
+                + "ghp_"
+                + "x" * 30
+                + " | <script>"
+            ),
             tool.DEFAULT_WEIGHTS,
             date(2026, 9, 1),
         )
@@ -176,6 +181,8 @@ class DiscoveryTests(unittest.TestCase):
             markdown = (Path(tmp) / "issues.md").read_text()
             self.assertNotIn("somebody@example.com", markdown)
             self.assertNotIn("<script>", markdown)
+            self.assertNotIn("+15551234567", markdown)
+            self.assertNotIn("ghp_" + "x" * 30, markdown)
             with (Path(tmp) / "issues.csv").open(newline="") as file:
                 record = next(csv.DictReader(file))
             self.assertTrue(record["title"].startswith("'="))

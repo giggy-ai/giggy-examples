@@ -43,6 +43,8 @@ CONTACT = re.compile(
     r"[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}|(?:https?://)?(?:www\.)?(?:linkedin\.com/in|t\.me)/\S+",
     re.I,
 )
+SECRET = re.compile(r"\b(?:giggy_sk_|ghp_|github_pat_|sk-)[A-Za-z0-9_-]{16,}")
+PHONE = re.compile(r"(?<!\w)\+\d[\d ()-]{7,}\d(?!\w)")
 NOISE = re.compile(
     r"upstream sync|open source trends|daily digest|weekly roundup|日报|生态日报|release notes|changelog",
     re.I,
@@ -62,6 +64,13 @@ FIELDS = [
 
 class DiscoveryError(Exception):
     """Sanitized API/configuration failure safe to show in a report."""
+
+
+def redact(value):
+    return SECRET.sub(
+        "[credential redacted]",
+        PHONE.sub("[contact redacted]", CONTACT.sub("[contact redacted]", value)),
+    )
 
 
 def token_from_environment() -> str | None:
@@ -180,8 +189,10 @@ def classify(issue: dict, weights: dict, cutoff: date) -> dict | None:
     high, problem = HIGH.search(focused), PROBLEM.search(focused)
     level = "high" if high else "medium" if problem else "low"
     evidence = f"Speech topic: {speech.group().lower()}"
-    if high or problem:
-        evidence += "; stated need: " + (high or problem).group().lower()
+    if high:
+        evidence += "; stated need: explicit speech-provider request pattern"
+    elif problem:
+        evidence += "; technical signal: " + problem.group().lower()
     if level == "high":
         action = "Review requested constraints; offer a tested minimal provider adapter or neutral comparison only if relevant."
     elif level == "medium":
@@ -191,12 +202,12 @@ def classify(issue: dict, weights: dict, cutoff: date) -> dict | None:
     return {
         "repository": match[1],
         "url": url,
-        "title": CONTACT.sub("[contact redacted]", str(issue.get("title", "")))[:250],
+        "title": redact(str(issue.get("title", "")))[:250],
         "created_at": str(issue.get("created_at", "")),
         "updated_at": updated,
         "classification": level,
         "score": weights[level],
-        "evidence": CONTACT.sub("[contact redacted]", evidence),
+        "evidence": redact(evidence),
         "recommended_contribution": action,
     }
 
