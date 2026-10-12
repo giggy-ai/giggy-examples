@@ -70,14 +70,7 @@ to the Vapi credential ID.
 
 Vapi sends a `voice-request` containing text and a requested `sampleRate`.
 
-Giggy currently supports:
-
-```text
-8000
-16000
-22050
-24000
-```
+The current public Giggy V17 contract accepts **24000 Hz only**. Vapi can request other sample rates; those requests are unsupported by this adapter and return HTTP 422. The server does not resample. Do not claim telephone/sample-rate compatibility until the actual Vapi route has been qualified.
 
 Giggy responds with:
 
@@ -113,3 +106,5 @@ the exact requested sample rate
 7. Record the result without storing credentials or call audio in Git.
 
 This repository has not performed an authorized Vapi test call.
+
+Contract source: [Giggy OpenAPI](https://giggy.ai/v1/openapi.json). See [Vapi custom TTS documentation](https://docs.vapi.ai/customization/custom-voices/custom-tts) for the platform's PCM requirements. A real Vapi call and requested sample-rate verification remain approval-gated; this repository does not change Vapi or Giggy production services.

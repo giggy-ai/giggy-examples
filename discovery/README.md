@@ -33,3 +33,5 @@ python discovery/summarize.py
 Do not fabricate missing results.
 
 Do not compare results gathered using materially different model or search configurations without recording those differences.
+
+For public technical issue research rather than assistant benchmarks, use the [read-only GitHub issue CLI](GITHUB-ISSUES.md). Neither tool generates promotional engagement.

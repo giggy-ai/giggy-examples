@@ -14,6 +14,8 @@ This repository contains small, runnable Giggy TTS examples for:
 - Vapi
 - Model Context Protocol (MCP)
 
+[Create a Giggy account](https://giggy.ai/?login=1&utm_source=github&utm_medium=referral&utm_campaign=developer_onboarding&utm_content=giggy-examples_readme) Â· [Speech API guide](https://giggy.ai/docs/speech-api?utm_source=github&utm_medium=referral&utm_campaign=developer_onboarding&utm_content=giggy-examples_docs) Â· [Browser voice sandbox](https://github.com/giggy-ai/giggy-voice-agent)
+
 ## Developer resources
 
 - Documentation: https://giggy.ai/docs/speech-api
@@ -22,9 +24,9 @@ This repository contains small, runnable Giggy TTS examples for:
 - MCP endpoint: https://giggy.ai/mcp
 - Pricing: https://giggy.ai/pricing
 - MCP setup repository: https://github.com/giggy-ai/giggy-mcp
-- [Postman API Collection](postman/Giggy-Speech-API.postman_collection.json) — [Public Postman workspace](https://www.postman.com/giggy-ai/giggy-speech-api/collection/w1k6ylw/giggy-speech-api)
-- [Free Batch TTS with Python](python/basic-tts/README.md)
-- [Giggy vs ElevenLabs TTS Comparison](tutorials/02-giggy-vs-elevenlabs/README.md)
+- [Postman API Collection](postman/Giggy-Speech-API.postman_collection.json) â€” [Public Postman workspace](https://www.postman.com/giggy-ai/giggy-speech-api/collection/w1k6ylw/giggy-speech-api)
+- [Batch TTS with Python](python/basic-tts/README.md)
+- [Provider comparison methodology](tutorials/02-giggy-vs-elevenlabs/README.md) — verify current behavior rather than treating historical comparisons as guarantees.
 
 ## Quick start
 
@@ -114,7 +116,7 @@ export GIGGY_API_KEY="giggy_sk_..."
 export GIGGY_VOICE_ID="your-giggy-voice-uuid"
 ```
 
-You can get a public voice UUID from:
+Obtain an account-scoped voice UUID using bearer authentication from:
 
 ```text
 GET https://giggy.ai/v1/voices
@@ -147,7 +149,7 @@ The example writes:
 node/basic-tts/speech.mp3
 ```
 
-Batch TTS uses Giggy's zero-credit Batch mode.
+Consult current pricing and account limits before running this request.
 
 ## Node.js: Streaming TTS
 
@@ -226,7 +228,7 @@ See:
 pipecat/python/README.md
 ```
 
-The Pipecat example uses a small `TTSService` adapter because Pipecat's current built-in OpenAI TTS implementation validates voices against OpenAI's own named voice set before making a request.
+For maintained Pipecat services, use [pipecat-giggy](https://github.com/giggy-ai/pipecat-giggy). The adapter in this examples directory is a compatibility reference; avoid copying it into a new package.
 
 Giggy voices use UUIDs.
 
@@ -268,7 +270,7 @@ fast
 streaming
 ```
 
-Batch generation uses zero credits.
+Use the live pricing documentation for current mode costs and limits.
 
 Fast, Streaming, OpenAI-compatible, Vapi, and other realtime compatibility paths use the applicable paid speech mode described in Giggy's current documentation.
 
@@ -277,3 +279,11 @@ Always use the live pricing page as the pricing source of truth:
 ```text
 https://giggy.ai/pricing
 ```
+
+## Voice-agent demos and technical issue research
+
+Reuse the [cloud Voice Agent Sandbox](https://github.com/giggy-ai/giggy-voice-agent) for microphone or typed conversations with your own Giggy and DeepSeek keys. For native Pipecat, review [existing demo PR #1](https://github.com/giggy-ai/pipecat-giggy/pull/1) and [cloud sandbox PR #2](https://github.com/giggy-ai/pipecat-giggy/pull/2); these are not merged examples on main. No duplicate demo is needed.
+
+The [read-only GitHub issue CLI](discovery/GITHUB-ISSUES.md) produces ranked technical-needs reports through the official API. It performs no outreach. [Acquisition measurement](docs/acquisition-measurement.md) separates verified events from proposed instrumentation.
+
+Start by installing dependencies for the selected example only. Keep keys in environment variables; generated audio and real reports are ignored by Git. Offline checks are `node --test test/native.test.mjs`, `python -m unittest discover -s discovery -p 'test_*.py' -v`, and the framework construction smoke tests documented in each folder. No test requires paid inference.

@@ -18,7 +18,7 @@ GIGGY_SPEECH_URL = r"""https://giggy.ai/v1/audio/speech"""
 
 @dataclass
 class GiggyTTSSettings(TTSSettings):
-    """Runtime voice/model settings and Giggy speech speed (0.25–4)."""
+    """Runtime voice/model settings and Giggy speech speed (0.25â€“4)."""
     speed: float | None | NotGiven = field(
         default_factory=lambda: NOT_GIVEN
     )
@@ -45,7 +45,7 @@ class GiggyTTSService(TTSService):
             api_key: Giggy API key.
             voice_id: Giggy voice UUID.
             aiohttp_session: HTTP session owned and closed by the application.
-            sample_rate: PCM output rate: 8000, 16000, 22050, or 24000 Hz.
+            sample_rate: PCM output rate: 24000 Hz (current Streaming contract).
             speed: Speech speed from 0.25 to 4 inclusive.
             **kwargs: Additional Pipecat TTSService options.
         """
@@ -59,15 +59,8 @@ class GiggyTTSService(TTSService):
                 r"""voice_id is required."""
             )
 
-        if sample_rate not in {
-            8000,
-            16000,
-            22050,
-            24000,
-        }:
-            raise ValueError(
-                r"""sample_rate must be 8000, 16000, 22050, or 24000."""
-            )
+        if sample_rate != 24000:
+            raise ValueError("sample_rate must be 24000 for Giggy Streaming")
 
         if not 0.25 <= speed <= 4:
             raise ValueError(

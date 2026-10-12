@@ -79,14 +79,7 @@ mono
 24000 Hz by default
 ```
 
-Supported Giggy compatibility sample rates are:
-
-```text
-8000
-16000
-22050
-24000
-```
+The current Streaming contract supports 24 kHz output. Do not resample inside the provider adapter or claim other rates based on historical compatibility examples.
 
 ## Authentication
 
@@ -129,3 +122,7 @@ python live_smoke.py
 - 2026-10-07: align PCM samples, reject malformed/empty audio and invalid speed,
   add bounded read/connect timeouts, disable redirects, keep errors credential-safe,
   and exercise the configured pipeline in the gated live smoke test.
+
+## Maintained package and browser demos
+
+Use [pipecat-giggy](https://github.com/giggy-ai/pipecat-giggy) for the maintained STT/TTS integration. This local adapter is a historical compatibility reference. Existing browser demos are in [PR #1](https://github.com/giggy-ai/pipecat-giggy/pull/1) and [PR #2](https://github.com/giggy-ai/pipecat-giggy/pull/2); review their qualification limits before using those branches.

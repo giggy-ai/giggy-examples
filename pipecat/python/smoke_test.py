@@ -20,6 +20,15 @@ async def async_main() -> None:
                 r"""GiggyTTSService construction failed."""
             )
 
+        for unsupported_rate in (8000, 16000, 22050):
+            try:
+                GiggyTTSService(api_key="fake-key", voice_id="fake-voice", aiohttp_session=session,
+                                sample_rate=unsupported_rate)
+            except ValueError:
+                pass
+            else:
+                raise AssertionError("Unsupported Streaming sample rate accepted")
+
         print(
             r"""Pipecat GiggyTTSService constructed successfully."""
         )

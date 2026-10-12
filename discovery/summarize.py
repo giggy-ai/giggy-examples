@@ -2,11 +2,13 @@ import csv
 from collections import defaultdict
 from pathlib import Path
 
-
 RESULTS_PATH = Path(__file__).parent / "results.csv"
 
 
 def main() -> None:
+    if not RESULTS_PATH.exists():
+        print("No discovery measurements recorded.")
+        return
     with RESULTS_PATH.open("r", encoding="utf-8", newline="") as file:
         rows = list(csv.DictReader(file))
 
