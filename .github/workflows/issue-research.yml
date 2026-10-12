@@ -1,0 +1,22 @@
+name: GitHub issue research
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python discovery/github_intent.py --config discovery/github-intent.example.json --output discovery/runs/latest
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: technical-needs-report
+          path: discovery/runs/latest/
+          retention-days: 7

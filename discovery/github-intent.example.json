@@ -1,0 +1,13 @@
+{
+  "queries": [
+    "\"ElevenLabs\" \"alternative\"",
+    "\"TTS provider\"",
+    "\"custom TTS\"",
+    "\"speech latency\"",
+    "\"OpenAI compatible\" \"TTS\"",
+    "\"voice agent\" \"text to speech\"",
+    "repo:pipecat-ai/pipecat TTS",
+    "repo:livekit/agents TTS"
+  ],
+  "weights": {"high": 90, "medium": 60, "low": 20}
+}

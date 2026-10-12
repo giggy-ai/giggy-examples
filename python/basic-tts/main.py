@@ -1,12 +1,13 @@
 import os
 from pathlib import Path
+from uuid import uuid4
 
 import requests
 
 API_URL = "https://giggy.ai/v1/text-to-speech"
 
 payload = {
-    "text": r"""Welcome to Giggy's free text-to-speech API.""",
+    "text": r"""Hello from Giggy's text-to-speech API.""",
     "voice_id": os.environ["GIGGY_VOICE_ID"],
     "model_id": "giggyspeech",
     "mode": "batch",
@@ -19,9 +20,11 @@ response = requests.post(
     headers={
         "xi-api-key": os.environ["GIGGY_API_KEY"],
         "Content-Type": "application/json",
+        "Idempotency-Key": str(uuid4()),
     },
     json=payload,
     timeout=600,
+    allow_redirects=False,
 )
 response.raise_for_status()
 
