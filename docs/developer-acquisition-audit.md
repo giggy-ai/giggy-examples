@@ -40,8 +40,8 @@ Vapi is a lower-priority inclusion proposal until real call/sample-rate qualific
 ## Validation and limits
 
 - JS SDK: 11 offline tests, build, npm installation/audit; published version checked separately.
-- Python SDK: 11 source/installed-wheel tests, sdist/wheel build, twine check, wheel import/license/py.typed checks; source Ruff and compilation checks. CI covers 3.10–3.13, but only local Python 3.12 is claimed until remote checks pass.
-- Examples: 2 Node request tests, 8 discovery/baseline tests, 1 Python Batch test, OpenAI JS install/syntax check, LiveKit and Pipecat construction/rate smoke checks.
+- Python SDK: 11 source/installed-wheel tests, sdist/wheel build, twine check, wheel import/license/py.typed checks; source Ruff and compilation checks. CI covers 3.10â€“3.13, but only local Python 3.12 is claimed until remote checks pass.
+- Examples: 2 Node request tests, 9 discovery/baseline tests, 1 Python Batch test, OpenAI JS install/syntax check, LiveKit and Pipecat construction/rate smoke checks.
 - Voice sandbox: 22 tests, syntax checks and public credential-pattern scan.
 - Native Pipecat sandbox: 42 STT protocol tests and 3 actual native pipeline tests with provider stand-ins after refreshing against main.
 - LiveKit proposal: 34 offline provider/example tests; focused Ruff formatting/lint.
