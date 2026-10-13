@@ -113,3 +113,11 @@ the exact requested sample rate
 7. Record the result without storing credentials or call audio in Git.
 
 This repository has not performed an authorized Vapi test call.
+
+## Transcribing exported phone recordings
+
+The custom webhook above supplies TTS only. Choose a Vapi-supported transcriber for a live phone assistant; no native Giggy Vapi STT configuration is claimed.
+
+For a completed call you are authorized to process, export/download its recording, convert locally with `ffmpeg -i call.mp3 -ac 1 -ar 16000 -c:a pcm_s16le recording.wav`, and run the [Python](../python/basic-tts/README.md#transcribe-a-recording) or [Node](../node/basic-tts/README.md#transcribe-a-recording) walkthrough with `--mode fast`. Retain the generation UUID, verify durable completion and protect the saved transcript.
+
+The result contains transcript text and audio/model metadata. It does not assign words to callers, generate timestamps, or classify sentiment. Review any extracted business claim against the recording before acting on it.

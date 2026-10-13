@@ -129,3 +129,11 @@ python live_smoke.py
 - 2026-10-07: align PCM samples, reject malformed/empty audio and invalid speed,
   add bounded read/connect timeouts, disable redirects, keep errors credential-safe,
   and exercise the configured pipeline in the gated live smoke test.
+
+## Pairing with Giggy STT
+
+For file transcription, use the [Python STT walkthrough](../../python/basic-tts/README.md#transcribe-a-recording). The separately maintained [Giggy Pipecat STT adapter](https://github.com/giggy-ai/pipecat-giggy#speech-to-text) documents its install requirements and integration with the pipeline's STT position.
+
+Keep the key on the pipeline server. The STT input rate is 16 kHz even when the TTS output rate is 24 kHz. Read cumulative transcript revisions, wait for microphone readiness before sending frames, and preserve frame order with acknowledged writes. VAD and the pipeline's turn/interruption policy must explicitly finish inputs within Giggy's 30-second audio and 35-second readiness limits.
+
+Test STT, LLM responses, TTS and interruption separately before judging the whole conversation. The TTS smoke test in this directory does not qualify the STT adapter or establish an upstream Pipecat provider listing.

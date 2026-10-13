@@ -331,3 +331,31 @@ Always use the live pricing page as the pricing source of truth:
 ```text
 https://giggy.ai/pricing
 ```
+
+## STT in voice-agent frameworks
+
+Start with the complete [Python recording walkthrough](python/basic-tts/README.md#transcribe-a-recording) or [Node recording walkthrough](node/basic-tts/README.md#transcribe-a-recording). Both existing executables support Batch, Fast and uploaded-WAV Streaming; they log the admitted UUID, reconcile durable status, and save final text.
+
+| Application | Existing path | STT responsibilities |
+| --- | --- | --- |
+| Archived meeting or phone call | Run the recording walkthrough on a locally converted WAV | Export authorized media, keep its UUID, protect the saved transcript; no speaker attribution or timestamps |
+| Live captions | Use the Python microphone or Node PCM replay example in the SDK README | Read SSE concurrently with ordered PCM frames; replace provisional text and finish each input explicitly |
+| LiveKit voice agent | Existing TTS example plus your chosen STT implementation | Keep API keys on the agent server; resample microphone PCM to 16 kHz; map cumulative transcript revisions; manage VAD, turns, interruption and audio playback in the agent |
+| Pipecat voice agent | Existing [Giggy STT adapter](https://github.com/giggy-ai/pipecat-giggy#speech-to-text) plus the TTS example here | Follow that adapter's pinned requirements and readiness/frame contract; use its documented duration limits |
+| Vapi phone agent | Existing custom TTS configuration; export completed call recordings for the recording walkthrough | Choose a supported Vapi transcriber separately. The custom TTS webhook does not make Giggy a native Vapi STT provider |
+
+Giggy's public live input is a short session: PCM16 little-endian, mono, 16 kHz; 0.5–30 seconds total audio; finish within 35 seconds after microphone readiness. Read events while sending, wait for each frame acknowledgement, and never resend ambiguously accepted frames. The server does not end a turn merely because the speaker is silent. Long conversations need explicit application turn boundaries; this guide does not present a reconnection or automatic retry rail.
+
+For an end-to-end STT → LLM → TTS example, the existing [Giggy voice-agent repository](https://github.com/giggy-ai/giggy-voice-agent) provides a separate server-side bridge with its own README and requirements. The core flow is recognition, a checked LLM reply, then speech synthesis. Do not send provisional text to actions that require a verified final transcript. Stop owned reply/playback work when your application's interruption detector fires.
+
+### Migrating an AssemblyAI recording workflow
+
+Convert the original audio/video/URL input locally to a compatible WAV. Replace the SDK transcription call with `transcriptions.transcribe` and consume the final `text`. For explicit control, map submit/status/result to `submit/get/result`; for live audio, use the Giggy readiness and ordered-frame contract rather than AssemblyAI WebSocket messages.
+
+There are no direct Giggy request equivalents for speaker labels, word timestamps, confidence, chapters, sentiment, PII redaction or domain keyterm prompting. Remove those options rather than inventing fields. Any separate text-processing step belongs to your application and must be identified as such.
+
+### Reproducing SDK verification
+
+The Node SDK's existing `test/live-smoke.mjs` checks recorded Fast/SSE when GIGGY_STT_WAV is set; paid checks require GIGGY_RUN_PAID_SMOKE=1. Use an authorized test key and a short fixture with a known reference. Keep generation UUIDs and terminal statuses, never tokens or signed URLs. A successful TTS smoke is not evidence that STT works.
+
+Provider contribution status and links are tracked in [upstream-submissions.md](docs/upstream-submissions.md). A fork, patch or submitted PR is different from an accepted provider shipped by the upstream framework.
