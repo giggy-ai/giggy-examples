@@ -1,7 +1,7 @@
-# Giggy TTS examples
+# Giggy speech API examples
 [![Examples CI](https://github.com/giggy-ai/giggy-examples/actions/workflows/ci.yml/badge.svg)](https://github.com/giggy-ai/giggy-examples/actions/workflows/ci.yml)
 
-Small, runnable examples for integrating the Giggy text-to-speech API with Node.js, Python, LiveKit, Pipecat, Vapi, MCP, and OpenAI-compatible clients.
+Small, runnable examples for integrating Giggy text-to-speech with Node.js, Python, LiveKit, Pipecat, Vapi, MCP, and OpenAI-compatible clients. Recorded-audio speech-to-text onboarding is documented below through the existing official SDK checkouts.
 
 This repository contains small, runnable Giggy TTS examples for:
 
@@ -13,6 +13,60 @@ This repository contains small, runnable Giggy TTS examples for:
 - Pipecat
 - Vapi
 - Model Context Protocol (MCP)
+
+For speech-to-text, see the [Giggy Speech API guide](https://giggy.ai/docs/speech-api#api-stt-developer-path), the [Python SDK](https://github.com/giggy-ai/giggy-python), and the [Node.js/TypeScript SDK](https://github.com/giggy-ai/giggy-js). Use SDK builds that contain the transcription methods; publishing those builds is separate from this README update.
+
+## First recorded transcript
+
+Prepare signed PCM16 mono 16 kHz WAV, 0.5–60 seconds for free Batch. Install the updated Python SDK from its source checkout, set `GIGGY_API_KEY`, and run this from your application directory:
+
+```python
+import os
+from giggy import Giggy
+
+giggy = Giggy(api_key=os.environ["GIGGY_API_KEY"])
+print(giggy.transcriptions.transcribe("recording.wav", mode="batch")["text"])
+```
+
+The SDK submits once, checks durable status, and fetches the signed transcript. For a longer paid recording, use `mode="fast"`. For provisional text from an uploaded recording, the SDKs offer `transcriptions.stream()`: every `transcript_chunk` replaces the previous preview. Live microphone capture uses the [separate PCM session contract](https://giggy.ai/docs/speech-api#api-stt-streaming). The current framework examples below cover TTS; the [Pipecat Giggy adapter](https://github.com/giggy-ai/pipecat-giggy#speech-to-text) is the existing STT integration.
+
+## Prepare audio for STT
+
+The current STT API accepts signed PCM16 mono 16 kHz WAV. Convert a local recording before calling either SDK:
+
+```bash
+ffmpeg -i input.mp3 -ac 1 -ar 16000 -c:a pcm_s16le recording.wav
+ffprobe -v error -show_entries stream=codec_name,sample_rate,channels -of default=noprint_wrappers=1 recording.wav
+```
+
+Verify `pcm_s16le`, `16000`, and `1`. Renaming an MP3 to `.wav` does not convert it. Choose Batch only for 0.5–60 seconds; use paid Fast for longer recordings. The SDKs accept local WAV paths on this API; they do not accept a remote URL or silently transcode another format.
+
+## STT recipes using the current transcript contract
+
+These examples use only the existing transcript text. They do not imply speaker identification, word timestamps, summaries, or sentiment analysis.
+
+**Archive a long recording as searchable text:** after converting to `recording.wav`, run this Python code with an API key. Fast is paid.
+
+```python
+import os
+from pathlib import Path
+from giggy import Giggy
+
+text = Giggy(api_key=os.environ["GIGGY_API_KEY"]).transcriptions.transcribe("recording.wav", mode="fast")["text"]
+Path("recording.txt").write_text(text, encoding="utf-8")
+```
+
+**Flag a phrase in a call recording:** convert the recording to mono WAV, then inspect the final transcript for an exact phrase. This is application-side text matching; it does not classify sentiment or identify speakers.
+
+```python
+import os
+from giggy import Giggy
+
+text = Giggy(api_key=os.environ["GIGGY_API_KEY"]).transcriptions.transcribe("recording.wav", mode="fast")["text"]
+print("Follow up" if "cancel my subscription" in text.casefold() else "No phrase match")
+```
+
+**Preview a short recording before its final transcript is ready:** use the [Python](https://github.com/giggy-ai/giggy-python#stream-transcript-revisions-from-an-uploaded-wav) or [Node.js](https://github.com/giggy-ai/giggy-js#stream-transcript-revisions-from-an-uploaded-wav) Streaming example. Replace each provisional `transcript_chunk` with the next one, then verify the canonical result through the generation UUID. Streaming is paid.
 
 ## Developer resources
 

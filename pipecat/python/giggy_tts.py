@@ -85,6 +85,9 @@ class GiggyTTSService(TTSService):
             sample_rate=sample_rate,
             push_start_frame=True,
             push_stop_frames=True,
+            # HTTP completion closes the context; its idle deadline must match
+            # the stream read timeout rather than Pipecat's three-second default.
+            stop_frame_timeout_s=90,
             settings=settings,
             **kwargs,
         )
