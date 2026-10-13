@@ -23,7 +23,7 @@ Batch uses zero credits but is queued and subject to request-size limits and rat
 
 ## Transcribe a recording
 
-This same executable also supports STT. Install the official Python SDK (`python -m pip install giggy==0.1.1` after its first PyPI release, or install the SDK source checkout). Only STT mode imports that SDK; the existing TTS mode continues to use requests.
+This same executable also supports STT. Install the official Python SDK (`python -m pip install giggy==0.1.2` after its first PyPI release, or install the SDK source checkout). Only STT mode imports that SDK; the existing TTS mode continues to use requests.
 
 1. Export a recording you are authorized to process. Keep the original private.
 2. Convert it with FFmpeg: `ffmpeg -i call.mp3 -ac 1 -ar 16000 -c:a pcm_s16le recording.wav`.
