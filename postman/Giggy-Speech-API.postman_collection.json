@@ -1,8 +1,9 @@
 {
   "info": {
     "name": "Giggy Speech API",
-    "description": "Giggy makes Voice AI affordable enough to offer hosted text-to-speech largely for free. Try free Batch TTS or paid Fast generation.\n\n[Giggy.ai](https://giggy.ai) provides a text-to-speech REST API. Batch uses zero credits and is queued; Fast consumes credits and receives higher queue priority.\n\n## Quick start\n\n1. Create a Giggy API key in Speech API → API Keys and select a voice UUID in the API Playground.\n2. Fork this collection into your workspace. Set `GIGGY_API_KEY` in a private Postman environment; never publish the key.\n3. Set `voiceId` to your valid voice UUID and `sampleText` to the text to speak. `baseUrl` defaults to `https://giggy.ai`.\n4. Send **Free Batch TTS** or **Fast TTS (Paid)**. Both wait for completed MP3 audio; no job polling is required.\n5. Check HTTP 200 and `audio/mpeg`, then use **Send and Download** or **Save Response** to save `speech.mp3`. Allow up to 600 seconds for queued requests.\n\nBatch is subject to queues, request-size limits, and rate limits. Errors return JSON; stop on errors rather than saving them as MP3.\n\n## Developer resources\n\n- [Giggy Speech API documentation](https://giggy.ai/docs/speech-api)\n- [Free Batch TTS with Python](https://github.com/giggy-ai/giggy-examples/tree/main/python/basic-tts)\n- [Giggy vs ElevenLabs listening comparison](https://github.com/giggy-ai/giggy-examples/tree/main/tutorials/02-giggy-vs-elevenlabs)",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    "description": "# Giggy Speech API — text-to-speech and recorded transcription\n\nBuild voiceovers, spoken notifications, and transcription workflows. Free Batch TTS returns completed MP3 audio; free Batch STT accepts recordings up to 60 seconds. Both are queued. Fast TTS is explicitly paid.\n\n## Generate your first audio\n1. Create your own API key at https://giggy.ai. Fork this collection and set `GIGGY_API_KEY` in a private environment. Never publish the key.\n2. Send **Find English voices**. On success its script selects the first returned `voice_id` into the collection's `voiceId` variable. You can choose another returned ID yourself.\n3. Edit `sampleText`, then send **Free Batch TTS**. Check HTTP 200 and `audio/mpeg`; use Send and Download or Save Response to save `speech.mp3`. Queued requests may take up to 600 seconds.\n4. **Fast TTS (Paid)** uses credits and higher queue priority. It is optional; do not run the whole collection unless you intend paid usage.\n\n## Transcribe a recording\n1. Download `sample-recording.wav` from https://github.com/giggy-ai/giggy-examples/tree/main/postman or supply your own authorized WAV (PCM16 LE, mono, 16 kHz, 0.5–60 seconds for Batch).\n2. Open **Transcribe recording — Free Batch** → Body → binary and select the local WAV. Use the Desktop Agent if your browser agent cannot upload files.\n3. HTTP 202 is admission, not a completed transcript. The script stores `generationUuid` from the response.\n4. Send **Check transcript status** until completed. Its script stores the signed `transcriptUrl`. On failure, inspect the error; do not resubmit while queued or processing.\n5. Send **Download completed transcript** only after completion. This request has no API-key header because the signed URL is the authorization. Treat the URL as private; do not share your environment or results.\n\nRecorded STT is distinct from live microphone transcription. Batch is free but subject to queues, request-size limits, and rate limits. Fast and Streaming have separate pricing. Error responses are JSON; do not save them as audio. STT does not provide speaker diarization, word timestamps, sentiment, or PII redaction.\n\n## Agent workflows\nUse the separate [**Giggy Speech MCP**](https://www.postman.com/giggy-ai/giggy-speech-api/collection/6ace9f50d5652f476d274389) collection to connect to the existing remote Streamable HTTP endpoint `https://giggy.ai/mcp`. Authenticate with your own key using `Authorization: Bearer`.\n\n## Developer resources\n- [Speech API docs](https://giggy.ai/docs/speech-api)\n- [OpenAPI specification](https://giggy.ai/v1/openapi.json)\n- [Free Batch Python tutorial](https://github.com/giggy-ai/giggy-examples/tree/main/python/basic-tts)\n- [Giggy MCP setup](https://github.com/giggy-ai/giggy-mcp)\n- [Python SDK](https://github.com/giggy-ai/giggy-python)\n- [JavaScript SDK](https://github.com/giggy-ai/giggy-js)\n",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "166dd06f-c487-4f47-a638-223665b5e51a"
   },
   "variable": [
     {
@@ -19,6 +20,31 @@
     }
   ],
   "item": [
+    {
+      "name": "Find English voices",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/v1/voices?language=English&limit=10",
+        "description": "Lists public English voices. On HTTP 200 the script selects the first returned voice_id for the TTS requests. Replace voiceId with another returned ID to choose a different voice."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Voice discovery succeeded\", () => pm.response.to.have.status(200));",
+              "if (pm.response.code === 200) {",
+              "  const data = pm.response.json();",
+              "  pm.test(\"At least one voice is available\", () => pm.expect(data.voices).to.be.an(\"array\").that.is.not.empty);",
+              "  if (data.voices && data.voices[0] && data.voices[0].voice_id) pm.collectionVariables.set(\"voiceId\", data.voices[0].voice_id);",
+              "}"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
     {
       "name": "Free Batch TTS",
       "request": {
@@ -37,15 +63,23 @@
           {
             "value": "application/json",
             "key": "Content-Type"
-          },
-          {
-            "value": "{{GIGGY_API_KEY}}",
-            "key": "xi-api-key"
           }
         ],
-        "description": "Batch is free but queued and subject to request-size and rate limits. Set GIGGY_API_KEY in your private Postman environment; never store or share it in this collection. Set voiceId to a valid Giggy voice UUID. The request waits for completed audio/mpeg; no polling is required. Use Send and Download (or Save Response to a file) and save the response as speech.mp3. Check for HTTP 200 and audio/mpeg before saving; errors are JSON. Allow up to 600 seconds for queued generation. Documentation: https://giggy.ai/docs/speech-api"
+        "description": "Batch is free but queued and subject to request-size and rate limits. Set GIGGY_API_KEY in your private Postman environment; never store or share it in this collection. Run Find English voices first, or set voiceId to a returned voice_id. The request waits for completed audio/mpeg; no polling is required. Use Send and Download (or Save Response to a file) and save the response as speech.mp3. Check for HTTP 200 and audio/mpeg before saving; errors are JSON. Allow up to 600 seconds for queued generation. Documentation: https://giggy.ai/docs/speech-api"
       },
-      "response": []
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Speech returned successfully\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Response is MP3 audio\", () => pm.expect(pm.response.headers.get(\"Content-Type\") || \"\").to.include(\"audio/mpeg\"));"
+            ]
+          }
+        }
+      ]
     },
     {
       "name": "Fast TTS (Paid)",
@@ -65,15 +99,131 @@
           {
             "value": "application/json",
             "key": "Content-Type"
-          },
-          {
-            "value": "{{GIGGY_API_KEY}}",
-            "key": "xi-api-key"
           }
         ],
-        "description": "Fast consumes credits and receives higher queue priority. Set GIGGY_API_KEY in your private Postman environment; never store or share it in this collection. Set voiceId to a valid Giggy voice UUID. The request waits for completed audio/mpeg; no polling is required. Use Send and Download (or Save Response to a file) and save the response as speech.mp3. Check for HTTP 200 and audio/mpeg before saving; errors are JSON. Allow up to 600 seconds for queued generation. Documentation: https://giggy.ai/docs/speech-api"
+        "description": "Fast consumes credits and receives higher queue priority. Set GIGGY_API_KEY in your private Postman environment; never store or share it in this collection. Run Find English voices first, or set voiceId to a returned voice_id. The request waits for completed audio/mpeg; no polling is required. Use Send and Download (or Save Response to a file) and save the response as speech.mp3. Check for HTTP 200 and audio/mpeg before saving; errors are JSON. Allow up to 600 seconds for queued generation. Documentation: https://giggy.ai/docs/speech-api"
       },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Speech returned successfully\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Response is MP3 audio\", () => pm.expect(pm.response.headers.get(\"Content-Type\") || \"\").to.include(\"audio/mpeg\"));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Transcribe recording — Free Batch",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/v1/audio/transcriptions?mode=batch&language=English",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "audio/wav"
+          }
+        ],
+        "body": {
+          "mode": "file",
+          "file": {}
+        },
+        "description": "Select sample-recording.wav or your own authorized WAV in Body → binary. PCM16 LE mono 16 kHz, 0.5–60 seconds. Batch uses zero credits. HTTP 202 only admits the recording; then use Check transcript status. Do not resubmit while queued or processing. Remove language for automatic detection."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.collectionVariables.unset(\"generationUuid\");",
+              "pm.collectionVariables.unset(\"transcriptUrl\");",
+              "pm.test(\"Recording admitted\", () => pm.response.to.have.status(202));",
+              "if (pm.response.code === 202) {",
+              "  const data = pm.response.json();",
+              "  const generation = data.generation;",
+              "  pm.test(\"Generation UUID returned\", () => pm.expect(generation.generation_uuid).to.be.a(\"string\").and.not.empty);",
+              "  if (generation.generation_uuid) pm.collectionVariables.set(\"generationUuid\", generation.generation_uuid);",
+              "}"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "Check transcript status",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/v1/generations/{{generationUuid}}",
+        "description": "Read the admitted recording status. Repeat this GET while queued or processing; do not create another transcription. Only completed status with result.url enables Download completed transcript."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.collectionVariables.unset(\"transcriptUrl\");",
+              "pm.test(\"Status read succeeded\", () => pm.response.to.have.status(200));",
+              "if (pm.response.code === 200) {",
+              "  const data = pm.response.json();",
+              "  const generation = data.generation;",
+              "  if (generation.status === \"completed\" && generation.result && generation.result.url) pm.collectionVariables.set(\"transcriptUrl\", generation.result.url);",
+              "}"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "Download completed transcript",
+      "request": {
+        "method": "GET",
+        "url": "{{transcriptUrl}}",
+        "auth": {
+          "type": "noauth"
+        },
+        "description": "Run only after Check transcript status reports completed. The signed URL is private and already authorizes this request; never attach your Giggy API key to it."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Transcript downloaded\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Transcript is JSON\", () => pm.expect(pm.response.headers.get(\"Content-Type\") || \"\").to.include(\"application/json\"));"
+            ]
+          }
+        }
+      ],
       "response": []
     }
-  ]
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "xi-api-key",
+        "type": "string"
+      },
+      {
+        "key": "value",
+        "value": "{{GIGGY_API_KEY}}",
+        "type": "string"
+      },
+      {
+        "key": "in",
+        "value": "header",
+        "type": "string"
+      }
+    ]
+  }
 }
