@@ -1,7 +1,9 @@
 # Giggy speech API examples
 [![Examples CI](https://github.com/giggy-ai/giggy-examples/actions/workflows/ci.yml/badge.svg)](https://github.com/giggy-ai/giggy-examples/actions/workflows/ci.yml)
 
-Small, runnable examples for integrating Giggy text-to-speech with Node.js, Python, LiveKit, Pipecat, Vapi, MCP, and OpenAI-compatible clients. Recorded-audio speech-to-text onboarding is documented below through the existing official SDK checkouts.
+Runnable Python and JavaScript examples for Giggy speech-to-text and text-to-speech APIs, with recording transcription, uploaded-WAV transcript Streaming, short live PCM sessions, and TTS integrations for LiveKit, Pipecat, Vapi, MCP and OpenAI-compatible clients.
+
+Choose [recording transcription](#first-recorded-transcript), [uploaded-WAV provisional text](#stt-recipes-using-the-current-transcript-contract), or [framework STT guidance](#stt-in-voice-agent-frameworks). Full live microphone and PCM replay examples are linked from the SDK READMEs. The [Pipecat adapter](https://github.com/giggy-ai/pipecat-giggy#speech-to-text) supplies live STT; existing LiveKit and Vapi examples here cover TTS. Compatibility does not establish a native provider listing.
 
 This repository contains small, runnable Giggy TTS examples for:
 
@@ -14,11 +16,24 @@ This repository contains small, runnable Giggy TTS examples for:
 - Vapi
 - Model Context Protocol (MCP)
 
-For speech-to-text, see the [Giggy Speech API guide](https://giggy.ai/docs/speech-api#api-stt-developer-path), the [Python SDK](https://github.com/giggy-ai/giggy-python), and the [Node.js/TypeScript SDK](https://github.com/giggy-ai/giggy-js). Use SDK builds that contain the transcription methods; publishing those builds is separate from this README update.
+For speech-to-text, use the published [Python SDK 0.1.3](https://pypi.org/project/giggy/0.1.3/) or [Node.js/TypeScript SDK 0.1.1](https://www.npmjs.com/package/@giggy-ai/sdk). See the [STT developer path](https://giggy.ai/docs/speech-api#api-stt-developer-path) for the recording and live input contracts.
+
+## Choose your workflow
+
+| Task | Start here | Requirements and scope |
+| --- | --- | --- |
+| Transcribe a WAV in Python | [Recording walkthrough](python/basic-tts/README.md#transcribe-a-recording) | Python 3.10+, giggy 0.1.3; final transcript text. |
+| Transcribe a WAV in Node.js | [Recording walkthrough](node/basic-tts/README.md#transcribe-a-recording) | Node.js 22+, SDK 0.1.1; final transcript text. |
+| Stream generated speech | [Node TTS walkthrough](node/streaming-tts/README.md) | Follow the example's setup and paid Streaming limits. |
+| Integrate live STT into Pipecat | [Giggy Pipecat adapter](https://github.com/giggy-ai/pipecat-giggy#speech-to-text) | Python 3.11+, adapter 0.2.0, Pipecat 1.12.0; application-owned transport/VAD. |
+| Generate a voiceover in n8n | [Existing workflow](https://github.com/giggy-ai/n8n-nodes-giggy#example-workflow) | Self-hosted n8n; TTS and voice discovery, not STT. Cloud verification is separate. |
+| Give a coding assistant speech tools | [MCP and skill setup](https://github.com/giggy-ai/giggy-mcp#install-for-ai-coding-agents) | User-supplied API key; TTS and recorded STT, not live microphone transport. |
+
+The [developer tool guide](https://giggy.ai/docs/speech-api#api-developer-tools) also links the API reference, TTS Postman requests and Academy course. Native provider approval and physical microphone/room/call qualification are separate from these examples.
 
 ## First recorded transcript
 
-Prepare signed PCM16 mono 16 kHz WAV, 0.5–60 seconds for free Batch. Install the updated Python SDK from its source checkout, set `GIGGY_API_KEY`, and run this from your application directory:
+Prepare signed PCM16 mono 16 kHz WAV, 0.5–60 seconds for free Batch. Run `python -m pip install giggy==0.1.3`, set `GIGGY_API_KEY`, and run this from your application directory:
 
 ```python
 import os
@@ -347,6 +362,12 @@ Start with the complete [Python recording walkthrough](python/basic-tts/README.m
 Giggy's public live input is a short session: PCM16 little-endian, mono, 16 kHz; 0.5–30 seconds total audio; finish within 35 seconds after microphone readiness. Read events while sending, wait for each frame acknowledgement, and never resend ambiguously accepted frames. The server does not end a turn merely because the speaker is silent. Long conversations need explicit application turn boundaries; this guide does not present a reconnection or automatic retry rail.
 
 For an end-to-end STT → LLM → TTS example, the existing [Giggy voice-agent repository](https://github.com/giggy-ai/giggy-voice-agent) provides a separate server-side bridge with its own README and requirements. The core flow is recognition, a checked LLM reply, then speech synthesis. Do not send provisional text to actions that require a verified final transcript. Stop owned reply/playback work when your application's interruption detector fires.
+
+### Migrating an OpenAI application
+
+For TTS, keep the OpenAI speech client, use `https://giggy.ai/v1` as its base URL and your Giggy API key, set `model` to `giggyspeech`, and use a Giggy voice UUID. Choose a supported output format and disable automatic synthesis retries. Follow the existing [OpenAI-compatible Node example](node/openai-compatible/).
+
+For STT, replace `audio.transcriptions.create(...)` with the Python or JavaScript `transcriptions.transcribe` call above. Convert the recording locally to PCM16 mono 16 kHz WAV and consume the SDK's final text. Changing the OpenAI base URL alone is insufficient: Giggy accepts raw WAV authenticated by `xi-api-key`, rather than OpenAI multipart input, and its raw Batch/Fast request returns asynchronous admission. SDK defaults are free Batch; raw REST defaults to paid Fast. The existing SDK performs submission, durable status reconciliation and final artifact retrieval. Unsupported speaker-analysis and timestamp fields must be removed.
 
 ### Migrating an AssemblyAI recording workflow
 

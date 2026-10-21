@@ -75,7 +75,7 @@ https://giggy.ai/v1/openapi.json
 
 ## Transcribe a recording
 
-The same executable supports a recording-to-text workflow using the official Node SDK. Install `@giggy-ai/sdk@0.1.1` in your application after publication, or install the SDK source checkout. STT requires Node.js 22+.
+The same executable supports a recording-to-text workflow using the published official Node SDK. From this repository's root, run `npm install --no-save @giggy-ai/sdk@0.1.1` so the example can resolve the package. STT requires Node.js 22+.
 
 Prepare a recording that you are authorized to process:
 

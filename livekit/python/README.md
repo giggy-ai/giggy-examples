@@ -92,7 +92,9 @@ contribution is merged and an installable release is published.
 
 ## Adding STT to the surrounding agent
 
-The TTS provider above accepts text; it does not accept microphone audio. For recorded audio, run the [Python STT walkthrough](../../python/basic-tts/README.md#transcribe-a-recording). For live audio, the [Python SDK microphone guide](https://github.com/giggy-ai/giggy-python#live-microphone-transcription) provides the existing Giggy PCM session contract.
+The TTS provider above accepts text; it does not accept microphone audio. For recorded audio, run the [Python STT walkthrough](../../python/basic-tts/README.md#transcribe-a-recording). For live audio, the [Python SDK microphone guide](https://github.com/giggy-ai/giggy-python#live-microphone-pcm-session) provides the existing Giggy PCM session contract.
+
+The production audit found that LiveKit's default retry policy can submit four synthesis attempts after a failure without an idempotency header. Review retry configuration before using this example for paid workloads; an ambiguous timeout is not proof the first generation stopped. The [Pipecat adapter](https://github.com/giggy-ai/pipecat-giggy#speech-to-text) is the existing Giggy live STT integration. See the [developer tool guide](https://giggy.ai/docs/speech-api#api-developer-tools) for other workflows.
 
 Keep the Giggy key on the LiveKit agent server. Resample incoming audio to PCM16 mono 16 kHz, wait for microphone_ready, send ordered acknowledged frames and read SSE concurrently. Map cumulative transcript_chunk revisions to your application's provisional transcription state, then reconcile durable completion before using final text. LiveKit's VAD, turn detection, interruption handling and room transport remain responsibilities of your agent implementation. One Giggy live session accepts at most 30 seconds and must finish within 35 seconds of readiness.
 
