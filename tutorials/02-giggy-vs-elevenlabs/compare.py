@@ -41,7 +41,7 @@ def generate(url, api_key, payload, destination, params=None):
 
 for name, text in PROMPTS.items():
     generate(
-        "https://giggy.ai/v1/text-to-speech",
+        "https://api.giggy.ai/v1/text-to-speech",
         GIGGY_API_KEY,
         {
             "text": text,

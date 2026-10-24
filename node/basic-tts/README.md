@@ -7,7 +7,7 @@ This example uses Giggy's native REST text-to-speech API from Node.js with the b
 ## Endpoint
 
 ```text
-POST https://giggy.ai/v1/text-to-speech
+POST https://api.giggy.ai/v1/text-to-speech
 ```
 
 ## Requirements
@@ -26,7 +26,7 @@ export GIGGY_VOICE_ID="your-giggy-voice-uuid"
 A public voice UUID can be obtained from:
 
 ```text
-GET https://giggy.ai/v1/voices
+GET https://api.giggy.ai/v1/voices
 ```
 
 ## Run
@@ -71,7 +71,7 @@ https://giggy.ai/docs/speech-api
 
 OpenAPI:
 
-https://giggy.ai/v1/openapi.json
+https://api.giggy.ai/v1/openapi.json
 
 ## Transcribe a recording
 

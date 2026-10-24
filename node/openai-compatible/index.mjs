@@ -14,7 +14,7 @@ if (!voiceId) {
 
 const client = new OpenAI({
   apiKey,
-  baseURL: 'https://giggy.ai/v1',
+  baseURL: 'https://api.giggy.ai/v1',
   maxRetries: 0,
 });
 

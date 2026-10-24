@@ -3,7 +3,7 @@ import os
 from livekit.plugins import openai
 
 
-GIGGY_BASE_URL = r"""https://giggy.ai/v1"""
+GIGGY_BASE_URL = r"""https://api.giggy.ai/v1"""
 
 
 def create_giggy_tts() -> openai.TTS:

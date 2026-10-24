@@ -86,7 +86,7 @@ print("Follow up" if "cancel my subscription" in text.casefold() else "No phrase
 ## Developer resources
 
 - Documentation: https://giggy.ai/docs/speech-api
-- OpenAPI 3.1: https://giggy.ai/v1/openapi.json
+- OpenAPI 3.1: https://api.giggy.ai/v1/openapi.json
 - Official JavaScript/TypeScript SDK: https://github.com/giggy-ai/giggy-js
 - MCP endpoint: https://giggy.ai/mcp
 - Pricing: https://giggy.ai/pricing
@@ -108,7 +108,7 @@ Generate an MP3 with the native Giggy text-to-speech REST API:
 
 ```bash
 curl --fail --show-error \
-  --request POST "https://giggy.ai/v1/text-to-speech" \
+  --request POST "https://api.giggy.ai/v1/text-to-speech" \
   --header "xi-api-key: ${GIGGY_API_KEY}" \
   --header "content-type: application/json" \
   --header "idempotency-key: quickstart-$(date +%s)-$$" \
@@ -123,19 +123,19 @@ For framework-specific integrations, use the examples below.
 Native Giggy text-to-speech:
 
 ```text
-POST https://giggy.ai/v1/text-to-speech
+POST https://api.giggy.ai/v1/text-to-speech
 ```
 
 OpenAI-compatible text-to-speech:
 
 ```text
-POST https://giggy.ai/v1/audio/speech
+POST https://api.giggy.ai/v1/audio/speech
 ```
 
 Available voices for your Giggy account:
 
 ```text
-GET https://giggy.ai/v1/voices
+GET https://api.giggy.ai/v1/voices
 ```
 
 This endpoint requires a bearer token. Use the `voice_id` field from each item in the returned `voices` array.
@@ -143,13 +143,13 @@ This endpoint requires a bearer token. Use the `voice_id` field from each item i
 Public connector voice catalog:
 
 ```text
-GET https://giggy.ai/v1/integrations/voices
+GET https://api.giggy.ai/v1/integrations/voices
 ```
 
 Vapi custom TTS:
 
 ```text
-POST https://giggy.ai/v1/integrations/vapi/text-to-speech/{voiceId}
+POST https://api.giggy.ai/v1/integrations/vapi/text-to-speech/{voiceId}
 ```
 
 MCP:
@@ -186,7 +186,7 @@ export GIGGY_VOICE_ID="your-giggy-voice-uuid"
 You can get a public voice UUID from:
 
 ```text
-GET https://giggy.ai/v1/voices
+GET https://api.giggy.ai/v1/voices
 ```
 
 ## Examples
@@ -260,7 +260,7 @@ node index.mjs
 The example uses the official OpenAI JavaScript client but points it at:
 
 ```text
-https://giggy.ai/v1
+https://api.giggy.ai/v1
 ```
 
 No OpenAI API key is required. Use your Giggy API key.
@@ -354,18 +354,18 @@ Start with the complete [Python recording walkthrough](python/basic-tts/README.m
 | Application | Existing path | STT responsibilities |
 | --- | --- | --- |
 | Archived meeting or phone call | Run the recording walkthrough on a locally converted WAV | Export authorized media, keep its UUID, protect the saved transcript; no speaker attribution or timestamps |
-| Live captions | Use the Python microphone or Node PCM replay example in the SDK README | Read SSE concurrently with ordered PCM frames; replace provisional text and finish each input explicitly |
-| LiveKit voice agent | Existing TTS example plus your chosen STT implementation | Keep API keys on the agent server; resample microphone PCM to 16 kHz; map cumulative transcript revisions; manage VAD, turns, interruption and audio playback in the agent |
+| Live captions | Use the Python microphone or Node PCM replay example in the SDK README | Read WebSocket events concurrently with binary PCM frames; replace provisional text and finish each input explicitly |
+| LiveKit voice agent | Existing TTS example plus the [native Giggy STT source PR](https://github.com/livekit/agents/pull/7659) | Keep API keys on the agent server; use the source plugin's streaming STT and Silero endpointing; map cumulative transcript revisions; manage application VAD, turns, interruption and audio playback in the agent |
 | Pipecat voice agent | Existing [Giggy STT adapter](https://github.com/giggy-ai/pipecat-giggy#speech-to-text) plus the TTS example here | Follow that adapter's pinned requirements and readiness/frame contract; use its documented duration limits |
 | Vapi phone agent | Existing custom TTS configuration; export completed call recordings for the recording walkthrough | Choose a supported Vapi transcriber separately. The custom TTS webhook does not make Giggy a native Vapi STT provider |
 
-Giggy's public live input is a short session: PCM16 little-endian, mono, 16 kHz; 0.5–30 seconds total audio; finish within 35 seconds after microphone readiness. Read events while sending, wait for each frame acknowledgement, and never resend ambiguously accepted frames. The server does not end a turn merely because the speaker is silent. Long conversations need explicit application turn boundaries; this guide does not present a reconnection or automatic retry rail.
+Live STT defaults to `wss://api.giggy.ai/v1/audio/transcriptions`: authenticate in upgrade headers, send JSON `start`, wait for `generation_created` and `ready`, then send binary mono LINEAR16 at 8 or 16 kHz. Send JSON `stop` after the real tail and validate `input_complete`, fenced final text and the canonical saved result. There are no per-frame HTTPS requests. Raw sessions use server endpointing by default; `options.endpointing="external"` leaves boundaries to the application. Framework source adapters use external endpointing, 16 kHz PCM and 0.5–30 second utterances. Never reconnect or replay ambiguous input automatically. Long conversations need explicit application turn boundaries; this guide does not present a reconnection or automatic retry rail.
 
 For an end-to-end STT → LLM → TTS example, the existing [Giggy voice-agent repository](https://github.com/giggy-ai/giggy-voice-agent) provides a separate server-side bridge with its own README and requirements. The core flow is recognition, a checked LLM reply, then speech synthesis. Do not send provisional text to actions that require a verified final transcript. Stop owned reply/playback work when your application's interruption detector fires.
 
 ### Migrating an OpenAI application
 
-For TTS, keep the OpenAI speech client, use `https://giggy.ai/v1` as its base URL and your Giggy API key, set `model` to `giggyspeech`, and use a Giggy voice UUID. Choose a supported output format and disable automatic synthesis retries. Follow the existing [OpenAI-compatible Node example](node/openai-compatible/).
+For TTS, keep the OpenAI speech client, use `https://api.giggy.ai/v1` as its base URL and your Giggy API key, set `model` to `giggyspeech`, and use a Giggy voice UUID. Choose a supported output format and disable automatic synthesis retries. Follow the existing [OpenAI-compatible Node example](node/openai-compatible/).
 
 For STT, replace `audio.transcriptions.create(...)` with the Python or JavaScript `transcriptions.transcribe` call above. Convert the recording locally to PCM16 mono 16 kHz WAV and consume the SDK's final text. Changing the OpenAI base URL alone is insufficient: Giggy accepts raw WAV authenticated by `xi-api-key`, rather than OpenAI multipart input, and its raw Batch/Fast request returns asynchronous admission. SDK defaults are free Batch; raw REST defaults to paid Fast. The existing SDK performs submission, durable status reconciliation and final artifact retrieval. Unsupported speaker-analysis and timestamp fields must be removed.
 
@@ -380,3 +380,13 @@ There are no direct Giggy request equivalents for speaker labels, word timestamp
 The Node SDK's existing `test/live-smoke.mjs` checks recorded Fast/SSE when GIGGY_STT_WAV is set; paid checks require GIGGY_RUN_PAID_SMOKE=1. Use an authorized test key and a short fixture with a known reference. Keep generation UUIDs and terminal statuses, never tokens or signed URLs. A successful TTS smoke is not evidence that STT works.
 
 Provider contribution status and links are tracked in [upstream-submissions.md](docs/upstream-submissions.md). A fork, patch or submitted PR is different from an accepted provider shipped by the upstream framework.
+
+## Partner integrations
+
+| Partner | Current integration | Release status |
+| --- | --- | --- |
+| LiveKit | [Native Giggy TTS and WebSocket STT](https://github.com/livekit/agents/pull/7659); install the PR source for streaming STT | Open upstream PR; not a released plugin |
+| Pipecat | [Giggy-maintained TTS and WebSocket STT](https://github.com/giggy-ai/pipecat-giggy#speech-to-text); use the documented source install | Source candidate 0.3.0.dev0; PyPI 0.2.0 uses its earlier transport |
+| Jambonz | Custom STT WebSocket URL `wss://api.giggy.ai/v1/audio/transcriptions`, Bearer upgrade header, mono LINEAR16 at 8/16 kHz; standard start/binary audio/stop | Server supports Jambonz callSid metadata; protocol replay verified, partner live-call qualification not claimed |
+
+New integrations use `https://api.giggy.ai/v1`; legacy `https://giggy.ai/v1` remains supported. Both enter the canonical authorization, admission, worker and billing rails. LiveKit and Pipecat can use the existing `prepare` control with external endpointing to overlap decoding and endpoint confirmation; this does not drop audio or change billing. See each adapter's source README for limits and lifecycle handling. Completed recordings retain the separate HTTPS upload/status/result contract.

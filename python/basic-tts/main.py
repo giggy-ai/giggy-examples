@@ -44,7 +44,7 @@ if args.stt:
         Path(args.output).write_text(result["text"], encoding="utf-8")
 else:
     import requests
-    API_URL = "https://giggy.ai/v1/text-to-speech"
+    API_URL = "https://api.giggy.ai/v1/text-to-speech"
 
     payload = {
         "text": r"""Welcome to Giggy's free text-to-speech API.""",

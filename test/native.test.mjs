@@ -58,7 +58,7 @@ test('native Batch example generates an authenticated MP3 request', async () => 
 
     assert.equal(
       request.url,
-      'https://giggy.ai/v1/text-to-speech',
+      'https://api.giggy.ai/v1/text-to-speech',
     );
 
     const headers = new Headers(request.init.headers);
@@ -88,7 +88,7 @@ test('native Streaming example handles progressive PCM response', async () => {
 
     assert.equal(
       request.url,
-      'https://giggy.ai/v1/text-to-speech',
+      'https://api.giggy.ai/v1/text-to-speech',
     );
 
     const headers = new Headers(request.init.headers);

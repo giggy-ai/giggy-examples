@@ -3,7 +3,7 @@
 Giggy exposes an OpenAI-compatible text-to-speech endpoint:
 
 ```text
-POST https://giggy.ai/v1/audio/speech
+POST https://api.giggy.ai/v1/audio/speech
 ```
 
 Giggy voices use UUID identifiers.
@@ -134,6 +134,6 @@ python live_smoke.py
 
 For file transcription, use the [Python STT walkthrough](../../python/basic-tts/README.md#transcribe-a-recording). The separately maintained [Giggy Pipecat STT adapter](https://github.com/giggy-ai/pipecat-giggy#speech-to-text) documents its install requirements and integration with the pipeline's STT position.
 
-Keep the key on the pipeline server. The STT input rate is 16 kHz even when the TTS output rate is 24 kHz. Read cumulative transcript revisions, wait for microphone readiness before sending frames, and preserve frame order with acknowledged writes. VAD and the pipeline's turn/interruption policy must explicitly finish inputs within Giggy's 30-second audio and 35-second readiness limits.
+Keep the key on the pipeline server. The current `0.3.0.dev0` source adapter uses one authenticated WebSocket for live STT, real binary PCM16 at 16 kHz, external endpointing and canonical decode preparation; TTS output remains 24 kHz. Install source for this transport; published `0.2.0` retains its earlier transport. Use the documented `GiggySTTService` with upstream Pipecat VAD, or `GiggyExternalSTTService` for explicit boundaries. Source adapters validate final input, identity and saved artifacts without automatic replay. Each utterance is 0.5–30 seconds. Drain the lifecycle and handle errors from durable verification even after final text arrives.
 
 Test STT, LLM responses, TTS and interruption separately before judging the whole conversation. The TTS smoke test in this directory does not qualify the STT adapter or establish an upstream Pipecat provider listing.
