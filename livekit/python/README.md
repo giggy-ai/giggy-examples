@@ -58,13 +58,13 @@ This repository deliberately demonstrates only the Giggy TTS integration.
 ## Giggy endpoint used
 
 ```text
-POST https://giggy.ai/v1/audio/speech
+POST https://api.giggy.ai/v1/audio/speech
 ```
 
 The LiveKit OpenAI client receives that endpoint by using:
 
 ```text
-base_url=https://giggy.ai/v1
+base_url=https://api.giggy.ai/v1
 model=giggyspeech
 voice=<Giggy voice UUID>
 response_format=pcm
@@ -80,7 +80,7 @@ The smoke test constructs the TTS object but performs no synthesis.
 
 ## Native LiveKit plugin contribution
 
-Giggy is contributing a native Python TTS plugin to LiveKit Agents.
+Giggy is contributing native Python TTS and WebSocket STT providers to LiveKit Agents.
 
 Upstream PR:
 https://github.com/livekit/agents/pull/7659
@@ -96,6 +96,6 @@ The TTS provider above accepts text; it does not accept microphone audio. For re
 
 The production audit found that LiveKit's default retry policy can submit four synthesis attempts after a failure without an idempotency header. Review retry configuration before using this example for paid workloads; an ambiguous timeout is not proof the first generation stopped. The [Pipecat adapter](https://github.com/giggy-ai/pipecat-giggy#speech-to-text) is the existing Giggy live STT integration. See the [developer tool guide](https://giggy.ai/docs/speech-api#api-developer-tools) for other workflows.
 
-Keep the Giggy key on the LiveKit agent server. Resample incoming audio to PCM16 mono 16 kHz, wait for microphone_ready, send ordered acknowledged frames and read SSE concurrently. Map cumulative transcript_chunk revisions to your application's provisional transcription state, then reconcile durable completion before using final text. LiveKit's VAD, turn detection, interruption handling and room transport remain responsibilities of your agent implementation. One Giggy live session accepts at most 30 seconds and must finish within 35 seconds of readiness.
+For live STT, install the native plugin from the linked PR source and set `stt=giggy.STT(language="en")` in your existing `AgentSession`. It uses `wss://api.giggy.ai/v1/audio/transcriptions`, resamples real mono PCM to 16 kHz, applies Silero endpointing, overlaps decode preparation with endpoint confirmation, and verifies final input, transcript identity and saved results. Keep consuming the stream and surface verification errors after a final event. Each source-adapter utterance is 0.5–30 seconds; cancellation aborts unfinished work without replay. Keep application turn detection, interruption handling and room transport in your existing agent.
 
-This repository does not ship a native Giggy LiveKit STT provider. Do not set an arbitrary OpenAI transcription base URL and assume its request/event schema matches Giggy. The existing native TTS contribution and this STT protocol guide have separate verification/acceptance status.
+The example in this directory remains OpenAI-compatible TTS. The native Giggy source plugin is not yet an upstream release; do not assume a package-registry install contains it. Changing an OpenAI transcription base URL does not migrate STT. See the [partner integration guide](../../README.md#partner-integrations) for current source and protocol status.

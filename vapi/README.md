@@ -3,7 +3,7 @@
 Giggy exposes a Vapi-compatible custom TTS webhook:
 
 ```text
-POST https://giggy.ai/v1/integrations/vapi/text-to-speech/{voiceId}
+POST https://api.giggy.ai/v1/integrations/vapi/text-to-speech/{voiceId}
 ```
 
 This is a Vapi custom TTS integration.
@@ -15,7 +15,7 @@ Giggy is not claiming a native Vapi provider listing.
 Get a public voice UUID from:
 
 ```text
-GET https://giggy.ai/v1/integrations/voices
+GET https://api.giggy.ai/v1/integrations/voices
 ```
 
 or use a Giggy voice UUID you already own.
@@ -39,7 +39,7 @@ with the Giggy voice UUID.
 Example:
 
 ```text
-https://giggy.ai/v1/integrations/vapi/text-to-speech/00000000-0000-0000-0000-000000000000
+https://api.giggy.ai/v1/integrations/vapi/text-to-speech/00000000-0000-0000-0000-000000000000
 ```
 
 ## 3. Store the Giggy key in Vapi
@@ -95,7 +95,7 @@ the exact requested sample rate
   "voice": {
     "provider": "custom-voice",
     "server": {
-      "url": "https://giggy.ai/v1/integrations/vapi/text-to-speech/VOICE_ID",
+      "url": "https://api.giggy.ai/v1/integrations/vapi/text-to-speech/VOICE_ID",
       "credentialId": "YOUR_VAPI_CUSTOM_CREDENTIAL_ID",
       "timeoutSeconds": 30
     }

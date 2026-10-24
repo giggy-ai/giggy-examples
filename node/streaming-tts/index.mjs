@@ -13,7 +13,7 @@ if (!voiceId) {
   throw new Error('Set GIGGY_VOICE_ID before running this example.');
 }
 
-const response = await fetch('https://giggy.ai/v1/text-to-speech', {
+const response = await fetch('https://api.giggy.ai/v1/text-to-speech', {
   method: 'POST',
   headers: {
     'xi-api-key': apiKey,

@@ -2,7 +2,7 @@
   "voice": {
     "provider": "custom-voice",
     "server": {
-      "url": "https://giggy.ai/v1/integrations/vapi/text-to-speech/VOICE_ID",
+      "url": "https://api.giggy.ai/v1/integrations/vapi/text-to-speech/VOICE_ID",
       "credentialId": "YOUR_VAPI_CUSTOM_CREDENTIAL_ID",
       "timeoutSeconds": 30
     }

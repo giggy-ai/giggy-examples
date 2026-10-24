@@ -15,7 +15,7 @@ export GIGGY_VOICE_ID="YOUR_VOICE_UUID"
 python python/basic-tts/main.py
 ```
 
-Open `speech.mp3` from the current working directory in an MP3 player. The request uses `POST https://giggy.ai/v1/text-to-speech`, `model_id=giggyspeech`, `mode=batch`, `output_format=mp3_24000_160`, and `voice_settings.speed=1`, authenticated with the `xi-api-key` header.
+Open `speech.mp3` from the current working directory in an MP3 player. The request uses `POST https://api.giggy.ai/v1/text-to-speech`, `model_id=giggyspeech`, `mode=batch`, `output_format=mp3_24000_160`, and `voice_settings.speed=1`, authenticated with the `xi-api-key` header.
 
 Batch uses zero credits but is queued and subject to request-size limits and rate limits. The HTTP request waits for completed audio; no job polling is required. This example allows 600 seconds per request and stops on an HTTP error, timeout, or non-audio response.
 

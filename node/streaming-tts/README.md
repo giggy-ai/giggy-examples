@@ -7,7 +7,7 @@ This example streams raw PCM speech from Giggy directly to disk without bufferin
 ## Endpoint
 
 ```text
-POST https://giggy.ai/v1/text-to-speech
+POST https://api.giggy.ai/v1/text-to-speech
 ```
 
 ## Requirements

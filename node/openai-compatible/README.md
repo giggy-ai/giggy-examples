@@ -7,13 +7,13 @@ This example uses the official OpenAI JavaScript client while sending speech req
 ## Giggy base URL
 
 ```text
-https://giggy.ai/v1
+https://api.giggy.ai/v1
 ```
 
 The OpenAI-compatible speech route is:
 
 ```text
-POST https://giggy.ai/v1/audio/speech
+POST https://api.giggy.ai/v1/audio/speech
 ```
 
 ## Requirements
@@ -46,7 +46,7 @@ The important client configuration is:
 ```js
 const client = new OpenAI({
   apiKey: process.env.GIGGY_API_KEY,
-  baseURL: 'https://giggy.ai/v1',
+  baseURL: 'https://api.giggy.ai/v1',
   maxRetries: 0,
 });
 ```
