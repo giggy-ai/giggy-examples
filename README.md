@@ -16,14 +16,14 @@ This repository contains small, runnable Giggy TTS examples for:
 - Vapi
 - Model Context Protocol (MCP)
 
-For speech-to-text, use the published [Python SDK 0.1.3](https://pypi.org/project/giggy/0.1.3/) or [Node.js/TypeScript SDK 0.1.1](https://www.npmjs.com/package/@giggy-ai/sdk). See the [STT developer path](https://giggy.ai/docs/speech-api#api-stt-developer-path) for the recording and live input contracts.
+For speech-to-text, use the published [Python SDK 0.2.0](https://pypi.org/project/giggy/0.2.0/) or [Node.js/TypeScript SDK 0.2.0](https://www.npmjs.com/package/@giggy-ai/sdk). See the [STT developer path](https://giggy.ai/docs/speech-api#api-stt-developer-path) for the recording and live input contracts.
 
 ## Choose your workflow
 
 | Task | Start here | Requirements and scope |
 | --- | --- | --- |
-| Transcribe a WAV in Python | [Recording walkthrough](python/basic-tts/README.md#transcribe-a-recording) | Python 3.10+, giggy 0.1.3; final transcript text. |
-| Transcribe a WAV in Node.js | [Recording walkthrough](node/basic-tts/README.md#transcribe-a-recording) | Node.js 22+, SDK 0.1.1; final transcript text. |
+| Transcribe a WAV in Python | [Recording walkthrough](python/basic-tts/README.md#transcribe-a-recording) | Python 3.10+, giggy 0.2.0; final transcript text. |
+| Transcribe a WAV in Node.js | [Recording walkthrough](node/basic-tts/README.md#transcribe-a-recording) | Node.js 22+, SDK 0.2.0; final transcript text. |
 | Stream generated speech | [Node TTS walkthrough](node/streaming-tts/README.md) | Follow the example's setup and paid Streaming limits. |
 | Integrate live STT into Pipecat | [Giggy Pipecat adapter](https://github.com/giggy-ai/pipecat-giggy#speech-to-text) | Python 3.11+, adapter 0.2.0, Pipecat 1.12.0; application-owned transport/VAD. |
 | Generate a voiceover in n8n | [Existing workflow](https://github.com/giggy-ai/n8n-nodes-giggy#example-workflow) | Self-hosted n8n; TTS and voice discovery, not STT. Cloud verification is separate. |
@@ -33,7 +33,7 @@ The [developer tool guide](https://giggy.ai/docs/speech-api#api-developer-tools)
 
 ## First recorded transcript
 
-Prepare signed PCM16 mono 16 kHz WAV, 0.5–60 seconds for free Batch. Run `python -m pip install giggy==0.1.3`, set `GIGGY_API_KEY`, and run this from your application directory:
+Prepare signed PCM16 mono 16 kHz WAV, 0.5 seconds–25 minutes for free Batch. Run `python -m pip install giggy==0.2.0`, set `GIGGY_API_KEY`, and run this from your application directory:
 
 ```python
 import os
@@ -54,7 +54,7 @@ ffmpeg -i input.mp3 -ac 1 -ar 16000 -c:a pcm_s16le recording.wav
 ffprobe -v error -show_entries stream=codec_name,sample_rate,channels -of default=noprint_wrappers=1 recording.wav
 ```
 
-Verify `pcm_s16le`, `16000`, and `1`. Renaming an MP3 to `.wav` does not convert it. Choose Batch only for 0.5–60 seconds; use paid Fast for longer recordings. The SDKs accept local WAV paths on this API; they do not accept a remote URL or silently transcode another format.
+Verify `pcm_s16le`, `16000`, and `1`. Renaming an MP3 to `.wav` does not convert it. Choose Batch for recordings from 0.5 seconds through 25 minutes; use paid Fast for longer recordings. The SDKs accept local WAV paths on this API; they do not accept a remote URL or silently transcode another format.
 
 ## STT recipes using the current transcript contract
 
@@ -386,7 +386,7 @@ Provider contribution status and links are tracked in [upstream-submissions.md](
 | Partner | Current integration | Release status |
 | --- | --- | --- |
 | LiveKit | [Native Giggy TTS and WebSocket STT](https://github.com/livekit/agents/pull/7659); install the PR source for streaming STT | Open upstream PR; not a released plugin |
-| Pipecat | [Giggy-maintained TTS and WebSocket STT](https://github.com/giggy-ai/pipecat-giggy#speech-to-text); use the documented source install | Source candidate 0.3.0.dev0; PyPI 0.2.0 uses its earlier transport |
+| Pipecat | [Giggy-maintained TTS and WebSocket STT](https://github.com/giggy-ai/pipecat-giggy#speech-to-text); install pipecat-giggy==0.3.0 | Released 0.3.0; earlier 0.2.0 retains its previous transport |
 | Jambonz | Custom STT WebSocket URL `wss://api.giggy.ai/v1/audio/transcriptions`, Bearer upgrade header, mono LINEAR16 at 8/16 kHz; standard start/binary audio/stop | Server supports Jambonz callSid metadata; protocol replay verified, partner live-call qualification not claimed |
 
 New integrations use `https://api.giggy.ai/v1`; legacy `https://giggy.ai/v1` remains supported. Both enter the canonical authorization, admission, worker and billing rails. LiveKit and Pipecat can use the existing `prepare` control with external endpointing to overlap decoding and endpoint confirmation; this does not drop audio or change billing. See each adapter's source README for limits and lifecycle handling. Completed recordings retain the separate HTTPS upload/status/result contract.
