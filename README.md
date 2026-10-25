@@ -386,7 +386,7 @@ Provider contribution status and links are tracked in [upstream-submissions.md](
 | Partner | Current integration | Release status |
 | --- | --- | --- |
 | LiveKit | [Native Giggy TTS and WebSocket STT](https://github.com/livekit/agents/pull/7659); install the PR source for streaming STT | Open upstream PR; not a released plugin |
-| Pipecat | [Giggy-maintained TTS and WebSocket STT](https://github.com/giggy-ai/pipecat-giggy#speech-to-text); install pipecat-giggy==0.3.0 | Released 0.3.0; earlier 0.2.0 retains its previous transport |
+| Pipecat | [Giggy-maintained TTS and WebSocket STT](https://github.com/giggy-ai/pipecat-giggy#speech-to-text); install pipecat-giggy==0.3.1 | Released 0.3.1; earlier 0.2.0 retains its previous transport |
 | Jambonz | Custom STT WebSocket URL `wss://api.giggy.ai/v1/audio/transcriptions`, Bearer upgrade header, mono LINEAR16 at 8/16 kHz; standard start/binary audio/stop | Server supports Jambonz callSid metadata; protocol replay verified, partner live-call qualification not claimed |
 
 New integrations use `https://api.giggy.ai/v1`; legacy `https://giggy.ai/v1` remains supported. Both enter the canonical authorization, admission, worker and billing rails. LiveKit and Pipecat can use the existing `prepare` control with external endpointing to overlap decoding and endpoint confirmation; this does not drop audio or change billing. See each adapter's source README for limits and lifecycle handling. Completed recordings retain the separate HTTPS upload/status/result contract.
