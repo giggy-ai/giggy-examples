@@ -25,7 +25,7 @@ For speech-to-text, use the published [Python SDK 0.2.0](https://pypi.org/projec
 | Transcribe a WAV in Python | [Recording walkthrough](python/basic-tts/README.md#transcribe-a-recording) | Python 3.10+, giggy 0.2.0; final transcript text. |
 | Transcribe a WAV in Node.js | [Recording walkthrough](node/basic-tts/README.md#transcribe-a-recording) | Node.js 22+, SDK 0.2.0; final transcript text. |
 | Stream generated speech | [Node TTS walkthrough](node/streaming-tts/README.md) | Follow the example's setup and paid Streaming limits. |
-| Integrate live STT into Pipecat | [Giggy Pipecat adapter](https://github.com/giggy-ai/pipecat-giggy#speech-to-text) | Python 3.11+, adapter 0.2.0, Pipecat 1.12.0; application-owned transport/VAD. |
+| Integrate live STT into Pipecat | [Giggy Pipecat adapter](https://github.com/giggy-ai/pipecat-giggy#speech-to-text) | Python 3.11+, adapter 0.3.1, Pipecat 1.12.0; provider endpoint detection plus upstream Pipecat turn timing. Use `GiggyExternalSTTService(endpointing="external")` for caller-owned boundaries. |
 | Generate a voiceover in n8n | [Existing workflow](https://github.com/giggy-ai/n8n-nodes-giggy#example-workflow) | Self-hosted n8n; TTS and voice discovery, not STT. Cloud verification is separate. |
 | Give a coding assistant speech tools | [MCP and skill setup](https://github.com/giggy-ai/giggy-mcp#install-for-ai-coding-agents) | User-supplied API key; TTS and recorded STT, not live microphone transport. |
 
